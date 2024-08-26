@@ -3,15 +3,30 @@
 
 #include "vec3.hpp"
 #include "color.hpp"
+#include "ray.hpp"
 
 using namespace std;
+
+color rayColor(const ray &ray)
+{
+    return color(0, 0, 0);
+}
 
 int main()
 {
 
     // Image size
-    int image_width = 256;
-    int image_height = 256;
+    double aspectRatio = 16.0 / 9.0;
+    int imageWidth = 400;
+
+    int imageHeight = int(imageWidth / aspectRatio);
+    // Checks if its atleast one
+    imageHeight = (imageHeight < 1) ? 1 : imageHeight;
+
+    double viewportHeight = 2.0;
+    double viewportWidth = viewportHeight * (double(imageWidth) / imageHeight);
+
+    point3 cameraCenter = point3(0, 0, 0);
 
     ofstream image_file("image.ppm");
     if (!image_file)
@@ -23,14 +38,14 @@ int main()
     // Render
     // Pixels are written in a row left -> right and the rows top -> bottom
     image_file << "P3\n"
-               << image_width << ' ' << image_height << "\n255\n";
+               << imageWidth << ' ' << imageHeight << "\n255\n";
 
-    for (int j = 0; j < image_height; j++)
+    for (int j = 0; j < imageHeight; j++)
     {
-        clog << "\rScanlines remaining: " << (image_height - j) << ' ' << flush;
-        for (int i = 0; i < image_width; i++)
+        clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
+        for (int i = 0; i < imageWidth; i++)
         {
-            auto pixel_color = color(double(i) / (image_width - 1), double(j) / (image_height - 1), 0);
+            auto pixel_color = color(double(i) / (imageWidth - 1), double(j) / (imageHeight - 1), 0);
             write_color(image_file, pixel_color);
         }
     }
