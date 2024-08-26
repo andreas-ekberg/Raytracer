@@ -3,13 +3,13 @@
 #include <ppl.h>
 #include <thread>
 
-#include "vec3.hpp"
 #include "color.hpp"
 #include "ray.hpp"
 #include "glmlib/glm.hpp"
 #include "glmlib/gtx/string_cast.hpp"
 
 using namespace std;
+using namespace glm;
 
 color rayColor(const ray &ray)
 {
@@ -30,7 +30,7 @@ int main()
     double viewportHeight = 2.0;
     double viewportWidth = viewportHeight * (double(imageWidth) / imageHeight);
 
-    point3 cameraCenter = point3(0, 0, 0);
+    glm::vec3 cameraCenter = glm::vec3(0, 0, 0);
 
     ofstream image_file("image.ppm");
     if (!image_file)
@@ -54,12 +54,13 @@ int main()
         }
     }
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
-                              {
+    {
         for (int i = 0; i < imageWidth; i++)
         {
             auto pixel_color = color(double(i) / (imageWidth - 1), double(j) / (imageHeight - 1), 0);
             write_color(image_file, pixel_color);
-        } });
+        } 
+    });
 
     clog
         << "\rDone.                 \n";

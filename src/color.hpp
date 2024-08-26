@@ -1,13 +1,14 @@
-#include "vec3.hpp"
 #include <iostream>
+#include "glmlib/glm.hpp"
+#include "glmlib/gtx/string_cast.hpp"
 
-using color = vec3;
+using color = glm::vec3;
 
-void write_color(std::ostream &out, const vec3 &pixel_color)
+void write_color(std::ostream &out, const glm::vec3 &pixel_color)
 {
-    auto r = pixel_color.x();
-    auto g = pixel_color.y();
-    auto b = pixel_color.z();
+    auto r = pixel_color.x;
+    auto g = pixel_color.y;
+    auto b = pixel_color.z;
 
     int rbyte = int(255.999 * r);
     int gbyte = int(255.999 * g);
