@@ -1,9 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <ppl.h>
+#include <thread>
 
 #include "vec3.hpp"
 #include "color.hpp"
 #include "ray.hpp"
+#include "glmlib/glm.hpp"
+#include "glmlib/gtx/string_cast.hpp"
 
 using namespace std;
 
@@ -49,6 +53,14 @@ int main()
             write_color(image_file, pixel_color);
         }
     }
+    concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
+                              {
+        for (int i = 0; i < imageWidth; i++)
+        {
+            auto pixel_color = color(double(i) / (imageWidth - 1), double(j) / (imageHeight - 1), 0);
+            write_color(image_file, pixel_color);
+        } });
 
-    clog << "\rDone.                 \n";
+    clog
+        << "\rDone.                 \n";
 }

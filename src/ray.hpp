@@ -6,7 +6,7 @@
 class ray
 {
 public:
-    ray() {}
+    ray() : rayOrigin(0, 0, 0), rayDirection(1, 0, 0) {}
     ray(const point3 &origin, const vec3 &direction) : rayOrigin(rayOrigin), rayDirection(rayDirection) {}
 
     const point3 &origin() const { return rayOrigin; }
