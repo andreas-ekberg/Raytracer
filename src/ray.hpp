@@ -4,11 +4,14 @@
 #include "glmlib/glm.hpp"
 #include "glmlib/gtx/string_cast.hpp"
 
-class ray
+class Ray
 {
 public:
-    ray() : rayOrigin(vec3(0, 0, 0)), rayDirection(vec3(1, 0, 0)) {}
-    ray(const vec3 &origin, const vec3 &direction) : rayOrigin(origin), rayDirection(direction) {}
+    Ray() {
+        rayOrigin = glm::vec3(0,0,0);
+        rayDirection = glm::vec3(0,0,0);
+    }
+    Ray(const glm::vec3 &origin, const glm::vec3 &direction) : rayOrigin(origin), rayDirection(direction) {}
 
     const glm::vec3 &origin() const { return rayOrigin; }
     const glm::vec3 &direction() const { return rayDirection; }
