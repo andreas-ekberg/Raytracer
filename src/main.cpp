@@ -9,6 +9,7 @@
 #include "rectangle.hpp"
 #include "glmlib/glm.hpp"
 #include "glmlib/gtx/string_cast.hpp"
+#include "HelperFunctions.hpp"
 
 using namespace std;
 using namespace glm;
@@ -20,7 +21,7 @@ color rayColor(const Ray &ray)
 
 int main()
 {
-
+    HelperFunctions theHelperFunctions = HelperFunctions();
     // Image size
     int imageWidth = 800;
     int imageHeight = 800;
@@ -37,20 +38,23 @@ int main()
     image_file << "P3\n"
                << imageWidth << ' ' << imageHeight << "\n255\n";
 
-    Rectangle rec1 = Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0));
-    Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0));
     double pixelSizeX = 2.0 / (double)imageWidth;
     double pixelSizeY = 2.0 / (double)imageHeight;
-    int n = 16;
+    Rectangle rec1 = Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0));
+    Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
+    
+    int n = 128;
+    int rowsDone = 0;
 
-    for (int j = 0; j < imageHeight; j++)
+    concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
     {
-        clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
+        //clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
         for (int i = 0; i < imageWidth; i++)
         {
+            int pixelIndex = j * imageWidth + i;
             glm::dvec3 pixelPos = glm::dvec3(0.0, i * pixelSizeX - 0.99875, j * pixelSizeY - 0.99875);
             glm::dvec3 rayDirection = pixelPos - camera.eyePos;
-            glm::dvec3 pixel_color = glm::dvec3(0.0,0.0,0.0);
+            glm::dvec3 pixel_color = glm::dvec3(0.0, 0.0, 0.0);
             for (int k = 0; k < n; k++) // SAMPLING
             {
                 //srand(static_cast<unsigned int>(time(0)));
@@ -75,31 +79,23 @@ int main()
                     glm::dvec3 tempColor = glm::dvec3(1.0, 1.0, 1.0) / (double)n;
                     pixel_color += tempColor;
                 }
-
             }
 
-            write_color(image_file, pixel_color);
+            camera.thePixels[pixelIndex].color = pixel_color;
         }
+        rowsDone++;
+        theHelperFunctions.DisplayLoadingBar(rowsDone, imageHeight);
+    });
+
+   clog
+        << "\rWriting Image to File...                 \n";
+    rowsDone = 0;
+    for (int i = 0; i < imageHeight * imageWidth; i++)
+    {
+        write_color(image_file, camera.thePixels[i].color);
+        rowsDone++;
+        theHelperFunctions.DisplayLoadingBar(rowsDone, imageHeight*imageWidth);
     }
-
-    /*    concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
-                                 {
-           for (int i = 0; i < imageWidth; i++)
-           {
-               Ray r = Ray(glm::dvec3(0,0,0), glm::dvec3(0,1,0));
-               float t;
-              // color pixel_color = color(1,0,0);
-              /*  if(rec1.isHit(r, t)){
-                  // cout << "Hit" << endl;
-                    pixel_color = color(1,0, 0);
-               }
-               else {
-                   pixel_color = color(1,1,1);
-               }
-
-             auto  pixel_color = color(double(i) / (imageWidth - 1), double(j) / (imageHeight - 1), 0);
-               write_color(image_file, pixel_color);
-           } }); */
 
     clog
         << "\rDone.                 \n";
