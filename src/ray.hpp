@@ -7,9 +7,10 @@
 class Ray
 {
 public:
-    Ray() {
-        rayOrigin = glm::vec3(0,0,0);
-        rayDirection = glm::vec3(0,0,0);
+    Ray()
+    {
+        rayOrigin = glm::vec3(0, 0, 0);
+        rayDirection = glm::vec3(0, 0, 0);
     }
     Ray(const glm::vec3 &origin, const glm::vec3 &direction) : rayOrigin(origin), rayDirection(direction) {}
 
@@ -21,7 +22,6 @@ public:
         return rayOrigin + rayDirection * t;
     }
 
-private:
     glm::vec3 rayOrigin;
     glm::vec3 rayDirection;
 };
