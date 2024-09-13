@@ -2,17 +2,17 @@
 #include "glmlib/glm.hpp"
 #include "glmlib/gtx/string_cast.hpp"
 
-using color = glm::vec3;
+using color = glm::dvec3;
 
-void write_color(std::ostream &out, const glm::vec3 &pixel_color)
+void write_color(std::ostream &out, const glm::dvec3 &pixel_color)
 {
-    auto r = pixel_color.x;
-    auto g = pixel_color.y;
-    auto b = pixel_color.z;
+    double r = pixel_color.x;
+    double g = pixel_color.y;
+    double b = pixel_color.z;
 
-    int rbyte = int(255.999 * r);
-    int gbyte = int(255.999 * g);
-    int bbyte = int(255.999 * b);
+    int rbyte = (int)(round(r*255.0 ));
+    int gbyte = (int)(round(g*255.0));
+    int bbyte = (int)(round(b*255.0));
 
     out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
 }

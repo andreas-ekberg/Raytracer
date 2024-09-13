@@ -8,7 +8,7 @@ class Rectangle : public Polygon
 public:
     // Constructor
     Rectangle() {}
-    Rectangle(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 bottomLeft, glm::vec3 bottomRight, glm::vec3 _color)
+    Rectangle(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, glm::dvec3 _color)
     {
         p[0] = topLeft;
         p[1] = topRight;
@@ -21,20 +21,20 @@ public:
     // Destructor
     ~Rectangle() {}
 
-    glm::vec3 isHit(Ray ray)
+    glm::dvec3 isHit(Ray ray)
     {
-        glm::vec3 v = p[2];
-        glm::vec3 s = ray.rayOrigin;
-        glm::vec3 direction = ray.rayDirection;
+        glm::dvec3 v = p[2];
+        glm::dvec3 s = ray.rayOrigin;
+        glm::dvec3 direction = ray.rayDirection;
         double t = glm::dot((v - s), normal) / glm::dot(direction, normal);
         // std::cout << t << "we go hard";
         if (t < DBL_EPSILON)
         {
-            return glm::vec3(NAN, NAN, NAN);
+            return glm::dvec3(NAN, NAN, NAN);
         }
-        glm::vec3 xi = ray.position(t);
-        glm::vec3 c1 = p[3] - v;
-        glm::vec3 c2 = p[0] - v;
+        glm::dvec3 xi = ray.position(t);
+        glm::dvec3 c1 = p[3] - v;
+        glm::dvec3 c2 = p[0] - v;
 
         double a = glm::dot((xi - v), c1) / glm::dot(c1, c1);
         double b = glm::dot((xi - v), c2) / glm::dot(c2, c2);
@@ -47,7 +47,7 @@ public:
         else
         {
             // std::cout << "Inside the last nan";
-            return glm::vec3(NAN, NAN, NAN);
+            return glm::dvec3(NAN, NAN, NAN);
         }
 
         /* // First time t is null
@@ -57,7 +57,7 @@ public:
         };
         for (int i = 0; i < 20; i++)
         {
-            glm::vec3 pos = r.position((float)i);
+            glm::dvec3 pos = r.position((float)i);
             if (pos.x >= p[0].x && pos.x <= p[1].x && pos.z <= p[0].z && pos.z >= p[2].z && pos.y - p[0].y < 1)
             {
                 t = i;
@@ -68,6 +68,6 @@ public:
     }
 
 private:
-    glm::vec3 p[4];
-    glm::vec3 color;
+    glm::dvec3 p[4];
+    glm::dvec3 color;
 };

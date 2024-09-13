@@ -9,7 +9,7 @@ class Camera
 {
 
 public:
-    Camera(glm::vec3 topLeft, glm::vec3 topRight, glm::vec3 bottomLeft, glm::vec3 bottomRight, glm::vec3 eyePosition)
+    Camera(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, glm::dvec3 eyePosition)
     {
         p[0] = topLeft;
         p[1] = topRight;
@@ -18,8 +18,8 @@ public:
         eyePos = eyePosition;
     }
 
-        glm::vec3 p[4];
-    glm::vec3 eyePos;
+    glm::dvec3 p[4];
+    glm::dvec3 eyePos;
 
 private:
 protected:

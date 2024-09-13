@@ -7,7 +7,7 @@ class Triangle : public Polygon {
 public:
     // Constructor
     Triangle() {}
-    Triangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 _color) {
+    Triangle(glm::dvec3 point1, glm::dvec3 point2, glm::dvec3 point3, glm::dvec3 _color) {
         p[0] = point1;
         p[1] = point2;
         p[2] = point3;
@@ -18,7 +18,7 @@ public:
     // Destructor
     ~Triangle() {}
 
-    bool isHit(ray &r, float &t) {
+    bool isHit(Ray &r, float &t) {
         // First time t is null
         if (t) {
             
@@ -28,7 +28,7 @@ public:
         return true; 
     }
 private:   
-    glm::vec3 p[3];
-    glm::vec3 color;
+    glm::dvec3 p[3];
+    glm::dvec3 color;
 
 };

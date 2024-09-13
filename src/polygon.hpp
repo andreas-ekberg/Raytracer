@@ -15,5 +15,5 @@ private:
     
 
 protected:
-    glm::vec3 normal;
+    glm::dvec3 normal;
 };
