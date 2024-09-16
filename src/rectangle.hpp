@@ -21,13 +21,12 @@ public:
     // Destructor
     ~Rectangle() {}
 
-    glm::dvec3 isHit(Ray ray)
+    glm::dvec3 isHit(Ray ray) override
     {
         glm::dvec3 v = p[2];
         glm::dvec3 s = ray.rayOrigin;
         glm::dvec3 direction = ray.rayDirection;
         double t = glm::dot((v - s), normal) / glm::dot(direction, normal);
-        // std::cout << t << "we go hard";
         if (t < DBL_EPSILON)
         {
             return glm::dvec3(NAN, NAN, NAN);
@@ -41,30 +40,17 @@ public:
 
         if (a >= 0.0 && a <= 1.0 && b >= 0.0 && b <= 1.0)
         {
-            // std::cout << "Inside the crzy if";
             return xi;
         }
         else
         {
-            // std::cout << "Inside the last nan";
             return glm::dvec3(NAN, NAN, NAN);
         }
+    }
 
-        /* // First time t is null
-        if (glm::dot(r.direction(), normal) < 0)
-        {
-            return false;
-        };
-        for (int i = 0; i < 20; i++)
-        {
-            glm::dvec3 pos = r.position((float)i);
-            if (pos.x >= p[0].x && pos.x <= p[1].x && pos.z <= p[0].z && pos.z >= p[2].z && pos.y - p[0].y < 1)
-            {
-                t = i;
-                return true;
-            }
-        }
-        return false; */
+    glm::dvec3 getColor() override
+    {
+        return color;
     }
 
 private:
