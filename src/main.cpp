@@ -11,6 +11,7 @@
 #include "glmlib/gtx/string_cast.hpp"
 #include "HelperFunctions.hpp"
 #include "polygon.hpp"
+#include "triangle/triangle.h"
 
 using namespace std;
 using namespace glm;
@@ -58,6 +59,15 @@ int main()
     int n = 128;
     int rowsDone = 0;
 
+    std::vector<std::unique_ptr<Polygon>> polygons2;
+    polygons2.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), color(1, 0, 0)));
+    glm::dvec3 hej = polygons2[0]->getColor();
+    std::cout << glm::to_string(hej) << std::endl;
+
+    /* Triangle tri1 = Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), color(1, 0, 0));
+    std::string hej = tri1.toString();
+    std::cout << hej << std::endl; */
+
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
     {
         //clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
@@ -88,7 +98,6 @@ int main()
                     pixel_color += tempColor;
                 }
             }
-
             camera.thePixels[pixelIndex].color = pixel_color;
         }
         rowsDone++;
