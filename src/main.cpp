@@ -6,12 +6,12 @@
 #include "color.hpp"
 #include "camera.hpp"
 #include "ray.hpp"
-#include "rectangle.hpp"
+#include "headers/rectangle.h"
 #include "glmlib/glm.hpp"
 #include "glmlib/gtx/string_cast.hpp"
 #include "HelperFunctions.hpp"
 #include "polygon.hpp"
-#include "triangle/triangle.h"
+#include "headers/triangle.h"
 
 using namespace std;
 using namespace glm;
@@ -54,19 +54,12 @@ int main()
     polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0, 1)));
     polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(0, 0, 0)));
     polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0, 0, 0)));
+    polygons.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0)));
+    polygons.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(1, 1, 0)));
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
     
     int n = 128;
     int rowsDone = 0;
-
-    std::vector<std::unique_ptr<Polygon>> polygons2;
-    polygons2.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), color(1, 0, 0)));
-    glm::dvec3 hej = polygons2[0]->getColor();
-    std::cout << glm::to_string(hej) << std::endl;
-
-    /* Triangle tri1 = Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), color(1, 0, 0));
-    std::string hej = tri1.toString();
-    std::cout << hej << std::endl; */
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
     {
