@@ -23,7 +23,7 @@ glm::dvec3 Ray::position(double t) const
     return rayOrigin + rayDirection * t;
 }
 
-Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<std::unique_ptr<Polygon>> &polygons)
+/* Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<std::unique_ptr<Polygon>> &polygons)
 {
 
     // New direction from reflec
@@ -56,7 +56,7 @@ Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector
             }
         }
     }
-}
+} */
 
 glm::dvec3 Ray::calculateOffsetRay(double pixelSizeX, double pixelSizeY)
 {
