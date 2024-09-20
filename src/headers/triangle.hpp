@@ -1,8 +1,8 @@
-#ifndef TRIANGLE_H
-#define TRIANGLE_H
+#ifndef TRIANGLE_HPP
+#define TRIANGLE_HPP
 
-#include "../polygon.hpp"
-#include "../ray.hpp"
+#include "polygon.hpp"
+#include "ray.hpp"
 #include "../glmlib/glm.hpp"
 #include "../glmlib/gtx/string_cast.hpp"
 
@@ -18,12 +18,9 @@ public:
     glm::dvec3 isHit(Ray ray) override;
     glm::dvec3 getPositionBarycentric(double u, double v);
 
-
-
 private:
     glm::dvec3 p[3];
     glm::dvec3 color;
-
 };
 
 #endif

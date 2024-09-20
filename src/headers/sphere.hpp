@@ -1,16 +1,17 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef SPHERE_HPP
+#define SPHERE_HPP
 
 #include "../glmlib/glm.hpp"
 #include "../glmlib/gtx/string_cast.hpp"
-#include "../ray.hpp"
+#include "ray.hpp"
 
-class Sphere {
+class Sphere
+{
 public:
     Sphere();
-    Sphere(const glm::dvec3& center, float radius);
+    Sphere(const glm::dvec3 &center, float radius);
 
-    bool hit(const Ray& r, float t_min, float t_max) const;
+    bool hit(const Ray &r, float t_min, float t_max) const;
 
     glm::dvec3 center() const;
     float radius() const;

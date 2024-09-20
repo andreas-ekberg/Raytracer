@@ -3,15 +3,15 @@
 #include <ppl.h>
 #include <thread>
 
-#include "color.hpp"
-#include "camera.hpp"
-#include "ray.hpp"
-#include "headers/rectangle.h"
+#include "headers/color.hpp"
+#include "headers/camera.hpp"
+#include "headers/ray.hpp"
+#include "headers/rectangle.hpp"
 #include "glmlib/glm.hpp"
 #include "glmlib/gtx/string_cast.hpp"
-#include "HelperFunctions.hpp"
-#include "polygon.hpp"
-#include "headers/triangle.h"
+#include "headers/HelperFunctions.hpp"
+#include "headers/polygon.hpp"
+#include "headers/triangle.hpp"
 
 using namespace std;
 using namespace glm;
@@ -42,40 +42,44 @@ int main()
 
     double pixelSizeX = 2.0 / (double)imageWidth;
     double pixelSizeY = 2.0 / (double)imageHeight;
-    
-    //Rectangle rec1 = Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0));
-    //Rectangle rec2 = Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0));
+
+    Material recMirror = Material(Material::MaterialType::Mirror);
+
     std::vector<std::unique_ptr<Polygon>> polygons;
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0, 0, 1)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 1)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0, 1)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(0, 0, 0)));
-    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0, 0, 0)));
-    polygons.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0)));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0, 0, 1), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 1), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0, 1), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(0, 0, 0), recMirror));
+    polygons.push_back(std::make_unique<Rectangle>(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0, 0, 0), recMirror));
+    polygons.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0));
     polygons.push_back(std::make_unique<Triangle>(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(1, 1, 0)));
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
-    
+
     int n = 128;
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
-    {
-        //clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
+                              {
+        // clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
         for (int i = 0; i < imageWidth; i++)
         {
             int pixelIndex = j * imageWidth + i;
             glm::dvec3 pixelPos = glm::dvec3(0.0, i * pixelSizeX - 0.99875, j * pixelSizeY - 0.99875);
             glm::dvec3 rayDirection = pixelPos - camera.eyePos;
             glm::dvec3 pixel_color = glm::dvec3(0.0, 0.0, 0.0);
-            for (int k = 0; k < n; k++) // SAMPLING
+            for (int k = 0; k < n; k++) // SAMPLING - ANIT ALIASING
             {
                 Ray r = Ray(camera.eyePos, rayDirection);
                 glm::dvec3 newDirectionRay = r.calculateOffsetRay(pixelSizeX, pixelSizeY);
-                
-                bool didntHit = true;
+
+                // GÖR RAYPATH
+
+                // FÅ FÄRG
+
+                /* bool didntHit = true;
                 for(auto& p : polygons) {
                     glm::dvec3 intersectionPoint = p->isHit(r);
                     didntHit = glm::all(glm::isnan(intersectionPoint));
@@ -89,22 +93,21 @@ int main()
                 if(didntHit){
                     glm::dvec3 tempColor = glm::dvec3(1.0, 1.0, 1.0) / ((double)n);
                     pixel_color += tempColor;
-                }
+                } */
             }
             camera.thePixels[pixelIndex].color = pixel_color;
         }
         rowsDone++;
-        theHelperFunctions.DisplayLoadingBar(rowsDone, imageHeight);
-    });
+        theHelperFunctions.DisplayLoadingBar(rowsDone, imageHeight); });
 
-   clog
+    clog
         << "\rWriting Image to File...                 \n";
     rowsDone = 0;
     for (int i = 0; i < imageHeight * imageWidth; i++)
     {
         write_color(image_file, camera.thePixels[i].color);
         rowsDone++;
-        theHelperFunctions.DisplayLoadingBar(rowsDone, imageHeight*imageWidth);
+        theHelperFunctions.DisplayLoadingBar(rowsDone, imageHeight * imageWidth);
     }
 
     clog

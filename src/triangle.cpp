@@ -1,10 +1,10 @@
 #ifndef TRIANGLE_CPP
 #define TRIANGLE_CPP
 
-#include "headers/triangle.h"
+#include "headers/triangle.hpp"
 
-Triangle::Triangle(){
-
+Triangle::Triangle()
+{
 }
 
 Triangle::Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _color)
@@ -16,11 +16,13 @@ Triangle::Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _c
     normal = glm::cross(p[1] - p[0], p[2] - p[0]);
 }
 
-glm::dvec3 Triangle::getColor() {
+glm::dvec3 Triangle::getColor()
+{
     return color;
 }
 
-glm::dvec3 Triangle::isHit(Ray ray){
+glm::dvec3 Triangle::isHit(Ray ray)
+{
     glm::dvec3 v0 = p[0];
     glm::dvec3 v1 = p[1];
     glm::dvec3 v2 = p[2];
@@ -34,7 +36,7 @@ glm::dvec3 Triangle::isHit(Ray ray){
     glm::dvec3 P = glm::cross(direction, e2);
     glm::dvec3 Q = glm::cross(T, e1);
 
-    glm::dvec3 tuv = (1/glm::dot(P, e1)) * glm::dvec3(glm::dot(Q, e2), glm::dot(P, T), glm::dot(Q, direction));
+    glm::dvec3 tuv = (1 / glm::dot(P, e1)) * glm::dvec3(glm::dot(Q, e2), glm::dot(P, T), glm::dot(Q, direction));
     double t = tuv.x;
     if (t < DBL_EPSILON || tuv.y <= 0.0 || tuv.z <= 0.0 || tuv.y + tuv.z >= 1.0)
     {
@@ -42,12 +44,11 @@ glm::dvec3 Triangle::isHit(Ray ray){
     }
     glm::dvec3 intersectionPoint = getPositionBarycentric(tuv.y, tuv.z);
     return intersectionPoint;
-
 }
 
-glm::dvec3 Triangle::getPositionBarycentric(double u, double v){
+glm::dvec3 Triangle::getPositionBarycentric(double u, double v)
+{
     return (1 - u - v) * p[0] + u * p[1] + v * p[2];
 }
 
 #endif
-

@@ -1,13 +1,13 @@
 #ifndef RECTANGLE_CPP
 #define RECTANGLE_CPP
 
-#include "headers/rectangle.h"
+#include "headers/rectangle.hpp"
 
-Rectangle::Rectangle(){
-
+Rectangle::Rectangle()
+{
 }
 
-Rectangle::Rectangle(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, glm::dvec3 _color)
+Rectangle::Rectangle(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, glm::dvec3 _color, Material materialType)
 {
     p[0] = topLeft;
     p[1] = topRight;
@@ -15,6 +15,7 @@ Rectangle::Rectangle(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomL
     p[3] = bottomRight;
     color = _color;
     normal = glm::cross(p[3] - p[2], p[0] - p[2]);
+    material = materialType;
 }
 
 Rectangle::~Rectangle() {}
@@ -44,9 +45,19 @@ glm::dvec3 Rectangle::isHit(Ray ray)
     }
 }
 
-glm::dvec3 Rectangle::getColor() 
+glm::dvec3 Rectangle::getColor()
 {
     return color;
+}
+
+Material Rectangle::getPolygonMaterial()
+{
+    return material;
+}
+
+glm::dvec3 Rectangle::getNormal()
+{
+    return normal;
 }
 
 #endif
