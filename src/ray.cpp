@@ -4,6 +4,7 @@
 #include "headers/ray.hpp"
 #include "headers/material.hpp"
 #include "headers/polygon.hpp"
+#include <iostream>
 
 Ray::Ray()
 {
@@ -25,7 +26,36 @@ glm::dvec3 Ray::position(double t) const
     return rayOrigin + rayDirection * t;
 }
 
-Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<Polygon> &polygons)
+Ray *Ray::calculateRayPath(std::vector<Polygon *> polygons)
+{
+    bool didntHit = true;
+    Material::MaterialType materialType;
+    for (auto &p : polygons)
+    {
+        glm::dvec3 intersectionPoint = p->isHit(*this);
+        didntHit = glm::all(glm::isnan(intersectionPoint));
+        if (!didntHit)
+        {
+            materialType = p->getPolygonMaterial().materialType;
+
+            switch (materialType)
+            {
+            case Material::MaterialType::Mirror:
+                return this->calculateRayPath(p->getNormal(), intersectionPoint, polygons);
+                break;
+            case Material::MaterialType::Lambertian:
+                this->rayColor = p->getColor();
+                srand(time(0)); // Seed the random number generator
+                float randomNum = 1 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
+                return randomNum == (float)1 ? this->calculateRayPath(p->getNormal(), intersectionPoint, polygons) : this;
+                return this;
+            }
+        }
+    }
+    return this;
+}
+
+Ray *Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<Polygon *> polygons)
 {
 
     // New direction from reflec
@@ -41,31 +71,42 @@ Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector
     bool didntHit = true;
     for (auto &p : polygons)
     {
-        glm::dvec3 intersectionPoint = p.isHit(*newRay);
+        glm::dvec3 intersectionPoint = p->isHit(*newRay);
         didntHit = glm::all(glm::isnan(intersectionPoint));
         if (!didntHit)
         {
             // if hit
-            materialType = p.getPolygonMaterial().materialType;
+            materialType = p->getPolygonMaterial().materialType;
             switch (materialType)
             {
             case Material::MaterialType::Mirror:
-                return newRay->calculateRayPath(p.getNormal(), intersectionPoint, polygons);
+                // std::cout << "hit mirror";
+                newRay->rayColor = glm::dvec3(1, 1, 1);
+                return newRay->calculateRayPath(p->getNormal(), intersectionPoint, polygons);
                 break;
             case Material::MaterialType::Lambertian:
-                return *this;
-            default:
-                return *this;
+                newRay->rayColor = p->getColor();
+                srand(time(0)); // Seed the random number generator
+                float randomNum = 1 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
+                return randomNum == (float)1 ? newRay->calculateRayPath(p->getNormal(), intersectionPoint, polygons) : this;
+                break;
             }
         }
-        else
-        {
-            return *this;
-        }
     }
-    return *this;
-}
 
+    return this;
+}
+glm::dvec3 Ray::getColorOfRayPath()
+{
+    Ray *rayPointer = this;
+    glm::dvec3 totColor = glm::dvec3(0, 0, 0);
+    while (rayPointer->nextRay != nullptr)
+    {
+        rayPointer = rayPointer->nextRay;
+    }
+
+    return rayPointer->rayColor;
+}
 glm::dvec3 Ray::calculateOffsetRay(double pixelSizeX, double pixelSizeY)
 {
     double randomNumberX = ((double)rand() / (double)RAND_MAX) - 1.0;

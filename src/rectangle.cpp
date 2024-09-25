@@ -14,7 +14,8 @@ Rectangle::Rectangle(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomL
     p[2] = bottomLeft;
     p[3] = bottomRight;
     color = _color;
-    normal = glm::cross(p[3] - p[2], p[0] - p[2]);
+    material.setMaterialColor(_color);
+    normal = glm::normalize(glm::cross(p[3] - p[2], p[0] - p[2]));
     material = materialType;
 }
 

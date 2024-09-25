@@ -12,8 +12,9 @@ Triangle::Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _c
     p[0] = _p1;
     p[1] = _p2;
     p[2] = _p3;
+    material.setMaterialColor(_color);
     color = _color;
-    normal = glm::cross(p[1] - p[0], p[2] - p[0]);
+    normal = glm::normalize(glm::cross(p[1] - p[0], p[2] - p[0]));
     material = materialType;
 }
 

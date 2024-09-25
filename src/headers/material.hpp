@@ -17,8 +17,13 @@ public:
     Material(MaterialType type);
 
     Material getMaterial();
+    glm::dvec3 getMaterialColor();
+    void setMaterialColor(glm::dvec3 color);
 
     MaterialType materialType;
+
+private:
+    glm::dvec3 color;
 };
 
 #endif

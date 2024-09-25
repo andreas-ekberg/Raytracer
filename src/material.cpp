@@ -11,4 +11,13 @@ Material Material::getMaterial()
     return materialType;
 }
 
+glm::dvec3 Material::getMaterialColor()
+{
+    return color;
+}
+void Material::setMaterialColor(glm::dvec3 _color)
+{
+    color = _color;
+}
+
 #endif
