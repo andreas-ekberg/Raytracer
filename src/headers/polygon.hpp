@@ -9,12 +9,6 @@
 class Polygon
 {
 public:
-    // Constructor
-    Polygon() {}
-
-    // Destructor
-    ~Polygon() {}
-
     virtual glm::dvec3 isHit(Ray ray) = 0;
 
     virtual glm::dvec3 getColor() = 0;

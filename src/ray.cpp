@@ -2,6 +2,8 @@
 #define RAY_CPP
 
 #include "headers/ray.hpp"
+#include "headers/material.hpp"
+#include "headers/polygon.hpp"
 
 Ray::Ray()
 {
@@ -23,7 +25,7 @@ glm::dvec3 Ray::position(double t) const
     return rayOrigin + rayDirection * t;
 }
 
-/* Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<std::unique_ptr<Polygon>> &polygons)
+Ray Ray::calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<Polygon> &polygons)
 {
 
     // New direction from reflec
@@ -39,24 +41,30 @@ glm::dvec3 Ray::position(double t) const
     bool didntHit = true;
     for (auto &p : polygons)
     {
-        glm::dvec3 intersectionPoint = p->isHit(*newRay);
+        glm::dvec3 intersectionPoint = p.isHit(*newRay);
         didntHit = glm::all(glm::isnan(intersectionPoint));
         if (!didntHit)
         {
             // if hit
-            materialType = p->getPolygonMaterial().materialType;
+            materialType = p.getPolygonMaterial().materialType;
             switch (materialType)
             {
             case Material::MaterialType::Mirror:
-                return newRay->calculateRayPath(p->getNormal(), intersectionPoint, polygons);
+                return newRay->calculateRayPath(p.getNormal(), intersectionPoint, polygons);
                 break;
             case Material::MaterialType::Lambertian:
                 return *this;
-                break;
+            default:
+                return *this;
             }
         }
+        else
+        {
+            return *this;
+        }
     }
-} */
+    return *this;
+}
 
 glm::dvec3 Ray::calculateOffsetRay(double pixelSizeX, double pixelSizeY)
 {

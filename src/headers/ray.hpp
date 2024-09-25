@@ -5,6 +5,9 @@
 #include "../glmlib/glm.hpp"
 #include "../glmlib/gtx/string_cast.hpp"
 
+// Forward declaration polygon class
+class Polygon;
+
 class Ray
 {
 public:
@@ -15,7 +18,7 @@ public:
 
     glm::dvec3 position(double t) const;
     glm::dvec3 calculateOffsetRay(double pixelSizeX, double pixelSizeY);
-    //Ray calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<std::unique_ptr<Polygon>> &polygons);
+    Ray calculateRayPath(glm::dvec3 normal, glm::dvec3 hitPosition, std::vector<Polygon> &polygons);
 
     glm::dvec3 rayOrigin;
     glm::dvec3 rayDirection;

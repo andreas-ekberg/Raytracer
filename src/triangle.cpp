@@ -7,13 +7,14 @@ Triangle::Triangle()
 {
 }
 
-Triangle::Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _color)
+Triangle::Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _color, Material materialType)
 {
     p[0] = _p1;
     p[1] = _p2;
     p[2] = _p3;
     color = _color;
     normal = glm::cross(p[1] - p[0], p[2] - p[0]);
+    material = materialType;
 }
 
 glm::dvec3 Triangle::getColor()
@@ -51,4 +52,13 @@ glm::dvec3 Triangle::getPositionBarycentric(double u, double v)
     return (1 - u - v) * p[0] + u * p[1] + v * p[2];
 }
 
+Material Triangle::getPolygonMaterial()
+{
+    return material;
+}
+
+glm::dvec3 Triangle::getNormal()
+{
+    return normal;
+}
 #endif

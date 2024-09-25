@@ -11,12 +11,16 @@ class Triangle : public Polygon
 
 public:
     Triangle();
-    Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _color);
+    Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _color, Material materialType);
 
     glm::dvec3 getColor() override;
 
     glm::dvec3 isHit(Ray ray) override;
     glm::dvec3 getPositionBarycentric(double u, double v);
+
+    Material getPolygonMaterial() override;
+
+    glm::dvec3 getNormal() override;
 
 private:
     glm::dvec3 p[3];
