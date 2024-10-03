@@ -12,14 +12,10 @@
 #include "headers/HelperFunctions.hpp"
 #include "headers/polygon.hpp"
 #include "headers/triangle.hpp"
+#include "headers/light.hpp"
 
 using namespace std;
 using namespace glm;
-
-color rayColor(const Ray &ray)
-{
-    return color(0, 0, 0);
-}
 
 int main()
 {
@@ -47,11 +43,12 @@ int main()
     // Material recLamb1 = Material(Material::MaterialType::Mirror);
     Material Lamb = Material(Material::MaterialType::Lambertian);
 
+    // ---- The room ---- //
     std::vector<Polygon *> polygons;
     polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0), Lamb));
     polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0), recMirror));
     polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0, 0, 1), Lamb));
-    polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1), recMirror));
+    polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1), Lamb));
     polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 1), Lamb));
     polygons.push_back(new Rectangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0, 1), Lamb));
     polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0.5, 0.5, 0.5), Lamb));
@@ -60,9 +57,14 @@ int main()
     polygons.push_back(new Triangle(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(1, 1, 0), Lamb));
     polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(0, 1, 0), Lamb));
     polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 0), Lamb));
+
+    // ---- The lights ---- //
+    Light areaLight = Light(glm::dvec3(7, 0.5, 4), glm::dvec3(8, 0.5, 4), glm::dvec3(7, -0.5, 4), glm::dvec3(8, -0.5, 4), 200.0);
+
+    // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
 
-    int n = 4;
+    int n = 16;
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
@@ -82,29 +84,9 @@ int main()
                 // GÖR RAYPATH
                 Ray *lastRay =  r.calculateRayPath(polygons);
 
-               
-                /* if(didntHit){
-                    glm::dvec3 tempColor = glm::dvec3(1.0, 1.0, 1.0) / ((double)n);
-                    pixel_color += tempColor;
-                } */
                 // FÅ FÄRG
-                 pixel_color += lastRay->getColorOfRayPath() / (double)n;
+                pixel_color += lastRay->getColorOfRayPath(areaLight, polygons) / (double)n;
                 
-                /* bool didntHit = true;
-                for(auto& p : polygons) {
-                    glm::dvec3 intersectionPoint = p->isHit(r);
-                    didntHit = glm::all(glm::isnan(intersectionPoint));
-                    if (!didntHit)
-                    {
-                        glm::dvec3 tempColor = p->getColor() / (double)n;
-                        pixel_color += tempColor;
-                        break;
-                    }
-                }
-                if(didntHit){
-                    glm::dvec3 tempColor = glm::dvec3(1.0, 1.0, 1.0) / ((double)n);
-                    pixel_color += tempColor;
-                } */
             }
             camera.thePixels[pixelIndex].color = pixel_color;
         }
