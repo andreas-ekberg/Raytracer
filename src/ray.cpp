@@ -20,6 +20,15 @@ Ray::Ray(const glm::dvec3 &origin, const glm::dvec3 &direction) : rayOrigin(orig
     prevRay = nullptr;
 }
 
+Ray::~Ray()
+{
+    if (nextRay != nullptr)
+    {
+        delete nextRay;
+        nextRay = nullptr;
+    }
+}
+
 const glm::dvec3 &Ray::origin() const { return rayOrigin; }
 const glm::dvec3 &Ray::direction() const { return rayDirection; }
 
@@ -28,35 +37,32 @@ glm::dvec3 Ray::position(double t) const
     return rayOrigin + rayDirection * t;
 }
 
-Ray *Ray::calculateRayPath(std::vector<Polygon *> &polygons)
+Ray *Ray::calculateRayPath()
 {
     bool didntHit = true;
     Material::MaterialType materialType;
-    double smallestTLength = (double)INFINITY;
+    double smallestTLength = std::numeric_limits<double>::infinity();
     glm::dvec3 possibleIntersectionPoint(0, 0, 0);
     int indexCounter = 0;
     int objectIndex = 0;
+
+    const auto &polygons = Polygon::polygons;
     for (auto &p : polygons)
     {
-
         glm::dvec3 intersectionPoint = p->isHit(*this);
-        didntHit = glm::all(glm::isnan(intersectionPoint));
-
-        double currentTLength = glm::length(intersectionPoint - this->origin());
-
-        if (smallestTLength > currentTLength)
+        if (!glm::all(glm::isnan(intersectionPoint)))
         {
-            smallestTLength = currentTLength;
-            possibleIntersectionPoint = intersectionPoint;
-            objectIndex = indexCounter;
+            double currentTLength = glm::length(intersectionPoint - this->origin());
+            if (currentTLength < smallestTLength)
+            {
+                smallestTLength = currentTLength;
+                possibleIntersectionPoint = intersectionPoint;
+                objectIndex = indexCounter;
+            }
         }
         indexCounter++;
     }
-    // std::cout << objectIndex;
-    if (objectIndex == 6)
-    {
-        // std::cout << "hej";
-    }
+
     materialType = polygons[objectIndex]->getPolygonMaterial().materialType;
     hitObjectMaterial = materialType;
 
@@ -67,17 +73,19 @@ Ray *Ray::calculateRayPath(std::vector<Polygon *> &polygons)
     {
     case Material::MaterialType::Mirror:
         this->rayColor = glm::dvec3(1, 1, 1);
-        return this->calculateRayPath(possibleIntersectionPoint, polygons);
+        return this->calculateRayPath(possibleIntersectionPoint);
         break;
     case Material::MaterialType::Lambertian:
-        this->rayColor = polygons[objectIndex]->getColor();
+        this->rayColor = Polygon::polygons[objectIndex]->getColor();
         // srand(time(0)); // Seed the random number generator
         float randomNum = 1 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
-        return randomNum == (float)1 ? this->calculateRayPath(possibleIntersectionPoint, polygons) : this;
+        return randomNum == (float)1 ? this->calculateRayPath(possibleIntersectionPoint) : this;
+        break;
     }
+    return this;
 }
 
-Ray *Ray::calculateRayPath(glm::dvec3 hitPosition, std::vector<Polygon *> &polygons)
+Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 {
 
     // New direction from reflec
@@ -95,7 +103,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 hitPosition, std::vector<Polygon *> &polyg
     glm::dvec3 possibleIntersectionPoint(0, 0, 0);
     int indexCounter = 0;
     int objectIndex = 0;
-    for (auto &p : polygons)
+    for (auto &p : Polygon::polygons)
     {
 
         glm::dvec3 intersectionPoint = p->isHit(*newRay);
@@ -116,25 +124,26 @@ Ray *Ray::calculateRayPath(glm::dvec3 hitPosition, std::vector<Polygon *> &polyg
     newRay->rayHitPoint = possibleIntersectionPoint;
 
     // if hit
-    materialType = polygons[objectIndex]->getPolygonMaterial().materialType;
+    materialType = Polygon::polygons[objectIndex]->getPolygonMaterial().materialType;
     newRay->hitObjectMaterial = materialType;
-    newRay->rayHitNormal = polygons[objectIndex]->getNormal();
+    newRay->rayHitNormal = Polygon::polygons[objectIndex]->getNormal();
     switch (materialType)
     {
     case Material::MaterialType::Mirror:
         // std::cout << "hit mirror";
         newRay->rayColor = glm::dvec3(1, 1, 1);
-        return newRay->calculateRayPath(possibleIntersectionPoint, polygons);
+        return newRay->calculateRayPath(possibleIntersectionPoint);
         break;
     case Material::MaterialType::Lambertian:
-        newRay->rayColor = polygons[objectIndex]->getColor();
+        newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
         float randomNum = (float)rand() / (float)RAND_MAX;
-        return randomNum < (float)0.5f ? newRay->calculateRayPath(possibleIntersectionPoint, polygons) : this;
+        return randomNum < (float)0.5f ? newRay->calculateRayPath(possibleIntersectionPoint) : this;
         break;
     }
+    return this;
 }
 
-glm::dvec3 Ray::getColorOfRayPath(Light &lightSource, std::vector<Polygon *> &polygons)
+glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 {
     Ray *rayPointer = this;
     // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
@@ -150,7 +159,7 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource, std::vector<Polygon *> &po
     case Material::MaterialType::Mirror:
         break;
     case Material::MaterialType::Lambertian:
-        totColor = rayPointer->calculateIrradiance(lightSource, polygons);
+        totColor = rayPointer->calculateIrradiance(lightSource);
         break;
     }
 
@@ -163,25 +172,26 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource, std::vector<Polygon *> &po
         switch (rayPointer->hitObjectMaterial)
         {
         case Material::MaterialType::Mirror:
+            totColor = totColor;
             break;
         case Material::MaterialType::Lambertian:
-            irradiance = rayPointer->calculateIrradiance(lightSource, polygons);
+            irradiance = rayPointer->calculateIrradiance(lightSource);
+            totColor = irradiance + rayPointer->rayColor * totColor;
             break;
         }
-        totColor = irradiance + rayPointer->nextRay->rayColor * totColor;
     }
 
     return totColor;
 }
 
-glm::dvec3 Ray::calculateIrradiance(Light &lightSource, std::vector<Polygon *> &polygons)
+glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
 {
 
     // Random point på lampan
     glm::dvec3 randomPoint = lightSource.getRandomPoint();
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
     glm::dvec3 lightNormal = lightSource.getNormal();
-    double isVisible = this->isVisible(this->rayHitPoint, randomPoint, lightSource, polygons);
+    double isVisible = this->isVisible(this->rayHitPoint, randomPoint, lightSource);
 
     double lightArea = lightSource.getArea();
 
@@ -201,13 +211,13 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource, std::vector<Polygon *> &
 
     double G = (cosOmegaX * cosOmegaY) / (distance * distance);
 
-    double E = lightArea * G * lightSource.getWatt() / M_PI;
+    double E = lightArea * isVisible * G * lightSource.getWatt() / M_PI;
 
     // Too bright / pi
-    return this->rayColor * E * isVisible;
+    return this->rayColor * E;
 }
 
-int Ray::isVisible(glm::dvec3 intersectionPoint, glm::dvec3 randomPointOnLight, Light &lightSource, std::vector<Polygon *> &polygons)
+int Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource)
 {
 
     double smallestTLength = (double)INFINITY;
@@ -215,7 +225,7 @@ int Ray::isVisible(glm::dvec3 intersectionPoint, glm::dvec3 randomPointOnLight, 
     int objectIndex = 0;
 
     Ray rayCast = Ray(randomPointOnLight, glm::normalize(intersectionPoint - randomPointOnLight));
-    for (auto &p : polygons)
+    for (auto &p : Polygon::polygons)
     {
 
         glm::dvec3 intersectionPoint = p->isHit(rayCast);

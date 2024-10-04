@@ -16,6 +16,8 @@ public:
     virtual Material getPolygonMaterial() = 0;
     virtual glm::dvec3 getNormal() = 0;
 
+    static std::vector<Polygon *> polygons;
+
 private:
 protected:
     glm::dvec3 normal;

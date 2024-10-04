@@ -39,18 +39,12 @@ glm::dvec3 Light::getRandomPoint()
     double randomX = ((double)rand()) / ((RAND_MAX + 1.0));
     double randomY = ((double)rand()) / ((RAND_MAX + 1.0));
 
-    // std::cout << "X: " << randomX << ", Y: " << randomY << "\n";
-
-    // randomX = randomX * glm::distance(p[0], p[1]);
-    // randomY = randomY * glm::distance(p[2], p[3]);
-
     glm::dvec3 edge1 = p[1] - p[0];
     glm::dvec3 edge2 = p[2] - p[0];
 
     // Change from 4 to actuall z height //
 
     glm::dvec3 randomPoint = p[0] + randomX * edge1 + randomY * edge2;
-    // std::cout << glm::to_string(randomPoint) << std::endl;
 
     return randomPoint;
 }

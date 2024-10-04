@@ -15,6 +15,9 @@ class Ray
 public:
     Ray();
     Ray(const glm::dvec3 &origin, const glm::dvec3 &direction);
+
+    Ray::~Ray();
+
     const glm::dvec3 &origin() const;
     const glm::dvec3 &direction() const;
 
@@ -22,14 +25,14 @@ public:
     glm::dvec3 calculateOffsetRay(double pixelSizeX, double pixelSizeY);
 
     // Second hits
-    Ray *calculateRayPath(glm::dvec3 hitPosition, std::vector<Polygon *> &polygons);
+    Ray *calculateRayPath(glm::dvec3 &hitPosition);
     // First ray
-    Ray *calculateRayPath(std::vector<Polygon *> &polygons);
+    Ray *calculateRayPath();
 
-    glm::dvec3 getColorOfRayPath(Light &lightSource, std::vector<Polygon *> &polygons);
-    glm::dvec3 calculateIrradiance(Light &lightSource, std::vector<Polygon *> &polygons);
+    glm::dvec3 getColorOfRayPath(Light &lightSource);
+    glm::dvec3 calculateIrradiance(Light &lightSource);
 
-    int isVisible(glm::dvec3 intersectionPoint, glm::dvec3 randomPointOnLight, Light &lightSource, std::vector<Polygon *> &polygons);
+    int isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource);
 
     // Ray stugg
     glm::dvec3 rayOrigin;

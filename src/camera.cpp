@@ -19,9 +19,9 @@ Camera::Camera(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, g
 
     for (size_t j = 0; j < imageHeight; j++)
     {
-        for (size_t i = 0; i < 800; i++)
+        for (size_t i = 0; i < imageHeight; i++)
         {
-            thePixels.push_back(Pixel(glm::dvec3(0.0, i * pixelSizeX - 0.99875, j * pixelSizeY - 0.99875)));
+            thePixels.push_back(Pixel(glm::dvec3(0.0, i * pixelSizeX - (1 - pixelSizeX), j * pixelSizeY - (1 - pixelSizeY))));
         }
     }
 }

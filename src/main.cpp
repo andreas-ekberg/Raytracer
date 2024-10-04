@@ -17,6 +17,8 @@
 using namespace std;
 using namespace glm;
 
+std::vector<Polygon *> Polygon::polygons;
+
 int main()
 {
     HelperFunctions theHelperFunctions = HelperFunctions();
@@ -44,23 +46,23 @@ int main()
     Material Lamb = Material(Material::MaterialType::Lambertian);
 
     // ---- The room ---- //
-    std::vector<Polygon *> polygons;
-    polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0), Lamb));
-    polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0), recMirror));
-    polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0, 0, 1), Lamb));
-    polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1), Lamb));
-    polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 1), Lamb));
-    polygons.push_back(new Rectangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0, 1), Lamb));
+    // std::vector<Polygon *> polygons;
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0), recMirror));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0, 0, 1), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 1), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0, 1), Lamb));
 
-    polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0.5, 0.5, 0.5), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0.5, 0.5, 0.5), Lamb));
 
-    polygons.push_back(new Rectangle(glm::dvec3(6, 1, -2), glm::dvec3(7, 1, -2), glm::dvec3(6, -1, -2), glm::dvec3(7, -1, -2), color(0, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(6, 1, -2), glm::dvec3(7, 1, -2), glm::dvec3(6, -1, -2), glm::dvec3(7, -1, -2), color(0, 1, 0), Lamb));
 
-    polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(1, 0, 0), Lamb));
-    polygons.push_back(new Triangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0), Lamb));
-    polygons.push_back(new Triangle(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(1, 1, 0), Lamb));
-    polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(0, 1, 0), Lamb));
-    polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(1, 0, 0), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(1, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(0, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 0), Lamb));
 
     // ---- The lights ---- //
     Light areaLight = Light(glm::dvec3(7, 0.5, 4.5), glm::dvec3(8, 0.5, 4.5), glm::dvec3(7, -0.5, 4.5), glm::dvec3(8, -0.5, 4.5), 200.0);
@@ -68,16 +70,16 @@ int main()
     // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
 
-    int n = 48;
+    int n = 64;
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
                               {
-        // clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << flush;
         for (int i = 0; i < imageWidth; i++)
         {
             int pixelIndex = j * imageWidth + i;
-            glm::dvec3 pixelPos = glm::dvec3(0.0, i * pixelSizeX - 0.99875, j * pixelSizeY - 0.99875);
+             int invertedY = imageHeight - j - 1; // Invert Y position
+            glm::dvec3 pixelPos = glm::dvec3(0.0, i * pixelSizeX - (1-pixelSizeX), invertedY * pixelSizeY - (1-pixelSizeY));
             glm::dvec3 rayDirection = pixelPos - camera.eyePos;
             glm::dvec3 pixel_color = glm::dvec3(0.0, 0.0, 0.0);
             for (int k = 0; k < n; k++) // SAMPLING - ANIT ALIASING
@@ -86,10 +88,10 @@ int main()
                 glm::dvec3 newDirectionRay = r.calculateOffsetRay(pixelSizeX, pixelSizeY);
 
                 // GÖR RAYPATH
-                Ray *lastRay =  r.calculateRayPath(polygons);
+                Ray *lastRay =  r.calculateRayPath();
 
                 // FÅ FÄRG
-                pixel_color += lastRay->getColorOfRayPath(areaLight, polygons) / (double)n;
+                pixel_color += lastRay->getColorOfRayPath(areaLight) / (double)n;
                 
             }
             camera.thePixels[pixelIndex].color = pixel_color;
