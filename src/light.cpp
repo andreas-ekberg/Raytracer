@@ -13,7 +13,7 @@ Light::Light(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm
     p[1] = topRight;
     p[2] = bottomLeft;
     p[3] = bottomRight;
-    normal = -glm::normalize(glm::cross(p[3] - p[2], p[0] - p[2]));
+    normal = glm::normalize(glm::cross(p[1] - p[0], p[2] - p[0]));
     color = glm::dvec3(1, 1, 1);
     area = glm::distance(p[0], p[1]) * glm::distance(p[2], p[3]);
     watt = _watt;
@@ -36,18 +36,21 @@ double Light::getWatt()
 
 glm::dvec3 Light::getRandomPoint()
 {
-    double randomX = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
-    double randomY = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
+    double randomX = ((double)rand()) / ((RAND_MAX + 1.0));
+    double randomY = ((double)rand()) / ((RAND_MAX + 1.0));
 
-    randomX = randomX * glm::distance(p[0], p[1]);
-    randomY = randomY * glm::distance(p[2], p[3]);
+    // std::cout << "X: " << randomX << ", Y: " << randomY << "\n";
 
-    glm::dvec3 edge1 = p[3] - p[2];
-    glm::dvec3 edge2 = p[0] - p[2];
+    // randomX = randomX * glm::distance(p[0], p[1]);
+    // randomY = randomY * glm::distance(p[2], p[3]);
+
+    glm::dvec3 edge1 = p[1] - p[0];
+    glm::dvec3 edge2 = p[2] - p[0];
 
     // Change from 4 to actuall z height //
 
-    glm::dvec3 randomPoint = p[2] + randomX * edge1 + randomY * edge2;
+    glm::dvec3 randomPoint = p[0] + randomX * edge1 + randomY * edge2;
+    // std::cout << glm::to_string(randomPoint) << std::endl;
 
     return randomPoint;
 }

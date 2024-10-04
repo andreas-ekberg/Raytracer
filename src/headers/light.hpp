@@ -3,6 +3,7 @@
 
 #include "../glmlib/glm.hpp"
 #include "../glmlib/gtx/string_cast.hpp"
+#include <iostream>
 
 class Light
 {
