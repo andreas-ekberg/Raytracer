@@ -4,11 +4,9 @@
 #include <ppl.h>
 #include "../glmlib/glm.hpp"
 #include "../glmlib/gtx/string_cast.hpp"
-#include "headers/light.hpp"
 #include "headers/material.hpp"
 
-// Forward declaration polygon class
-class Polygon;
+class Light;
 
 class Ray
 {

@@ -48,7 +48,7 @@ int main()
     // ---- The room ---- //
     // std::vector<Polygon *> polygons;
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0, 0), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0), recMirror));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0, 1, 0), Lamb));
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0, 0, 1), Lamb));
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0, 0, 1), Lamb));
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 1), Lamb));
@@ -56,7 +56,7 @@ int main()
 
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0.5, 0.5, 0.5), Lamb));
 
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(6, 1, -2), glm::dvec3(7, 1, -2), glm::dvec3(6, -1, -2), glm::dvec3(7, -1, -2), color(0, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(6, -5, -2), glm::dvec3(7, -5, -2), glm::dvec3(6, -6, -2), glm::dvec3(7, -6, -2), color(0, 1, 0), Lamb));
 
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(1, 0, 0), Lamb));
     Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0), Lamb));
@@ -65,7 +65,8 @@ int main()
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 0), Lamb));
 
     // ---- The lights ---- //
-    Light areaLight = Light(glm::dvec3(7, 0.5, 4.5), glm::dvec3(8, 0.5, 4.5), glm::dvec3(7, -0.5, 4.5), glm::dvec3(8, -0.5, 4.5), 200.0);
+    Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 200.0);
+    Polygon::polygons.push_back(areaLight);
 
     // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
@@ -91,7 +92,7 @@ int main()
                 Ray *lastRay =  r.calculateRayPath();
 
                 // FÅ FÄRG
-                pixel_color += lastRay->getColorOfRayPath(areaLight) / (double)n;
+                pixel_color += lastRay->getColorOfRayPath(*areaLight) / (double)n;
                 
             }
             camera.thePixels[pixelIndex].color = pixel_color;

@@ -10,7 +10,8 @@ public:
     enum MaterialType
     {
         Mirror,
-        Lambertian
+        Lambertian,
+        Light
     };
 
     Material();
