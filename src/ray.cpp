@@ -82,8 +82,9 @@ Ray *Ray::calculateRayPath()
     case Material::MaterialType::Lambertian:
         this->rayColor = Polygon::polygons[objectIndex]->getColor();
         // srand(time(0)); // Seed the random number generator
-        float randomNum = 1 + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
-        return randomNum == (float)1 ? this->calculateRayPath(possibleIntersectionPoint) : this;
+        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
+
+        return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
     }
 
     return this;
@@ -91,9 +92,8 @@ Ray *Ray::calculateRayPath()
 
 Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 {
-
     // New direction from reflec
-    glm::dvec3 inDirection = rayDirection;
+    glm::dvec3 inDirection = this->rayDirection;
     glm::dvec3 newDirection = inDirection - 2.0 * ((glm::dot(inDirection, this->rayHitNormal)) * this->rayHitNormal);
 
     Ray *newRay = new Ray(hitPosition, newDirection);
@@ -115,7 +115,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 
         double currentTLength = glm::length(intersectionPoint - newRay->origin());
 
-        if (smallestTLength > currentTLength)
+        if (currentTLength < smallestTLength)
         {
             smallestTLength = currentTLength;
             possibleIntersectionPoint = intersectionPoint;
@@ -129,6 +129,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 
     // if hit
     materialType = Polygon::polygons[objectIndex]->getPolygonMaterial().materialType;
+
     newRay->hitObjectMaterial = materialType;
     newRay->rayHitNormal = Polygon::polygons[objectIndex]->getNormal();
     switch (materialType)
@@ -143,21 +144,33 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
         break;
     case Material::MaterialType::Lambertian:
         newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
-        float randomNum = (float)rand() / (float)RAND_MAX;
-        return randomNum < (float)0.5f ? newRay->calculateRayPath(possibleIntersectionPoint) : this;
+        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
+        if (randomNum >= 0.2f)
+        {
+            std::cout << randomNum << " ";
+
+            return newRay->calculateRayPath(possibleIntersectionPoint);
+        }
+        else
+            return this;
     }
+
     return this;
 }
 
 glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 {
     Ray *rayPointer = this;
+    int rayHist = 1;
     // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
     //  Loop to get to end of ray path
     while (rayPointer->nextRay != nullptr)
     {
+
         rayPointer = rayPointer->nextRay;
+        rayHist++;
     }
+    std::cout << rayHist;
 
     glm::dvec3 totColor = glm::dvec3(1, 0, 0);
     /*  switch (rayPointer->hitObjectMaterial)
@@ -174,8 +187,6 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
     // Get color from end -> start
     while (rayPointer->prevRay != nullptr)
     {
-        glm::dvec3 totColor2(0, 0, 0);
-
         glm::dvec3 irradiance(0, 0, 0);
         switch (rayPointer->hitObjectMaterial)
         {
@@ -184,20 +195,18 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
             break;
         case Material::MaterialType::Lambertian:
             irradiance = rayPointer->calculateIrradiance(lightSource);
-            // totColor = irradiance + rayPointer->rayColor * totColor;
+            totColor = irradiance + rayPointer->rayColor * totColor;
             // std::cout << irradiance.x << " " << irradiance.y << " " << irradiance.z << " \n";
 
-            totColor2 = irradiance + totColor2;
             break;
         case Material::MaterialType::Light:
             totColor = glm::dvec3(1, 1, 1);
             break;
         }
-        totColor = totColor2;
         rayPointer = rayPointer->prevRay;
-        std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " I WHIEL---------------------------------------------- \n";
+        // std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " I WHIEL---------------------------------------------- \n";
     }
-    std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " \n";
+    // std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " \n";
 
     return totColor;
 }
