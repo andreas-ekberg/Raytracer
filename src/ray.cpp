@@ -87,8 +87,8 @@ Ray *Ray::calculateRayPath()
 
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
 
-        // return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
-        return this;
+        return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
+        //return this;
     }
 
     return this;
@@ -224,21 +224,21 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
 
     // std::cout << glm::to_string(lightSource.getRandomPoint()) << std::endl;
 
-    double cosOmegaX = glm::clamp(glm::dot(glm::normalize(this->rayHitNormal), glm::normalize(LightToPointDirection)), 0.0, (double)INFINITY);
+    double cosOmegaX = glm::clamp(glm::dot(glm::normalize(this->rayHitNormal), LightToPointDirection) / distance, 0.0, (double)INFINITY);
     // std::cout << cosOmegaX << "\n";
 
-    double cosOmegaY = -1.0 * glm::dot(lightNormal, glm::normalize(LightToPointDirection));
+    double cosOmegaY = -1.0 * glm::dot(lightNormal, LightToPointDirection) / distance;
 
     if (cosOmegaY < 0.0)
     {
-        cosOmegaX = 0.0;
+        cosOmegaY = 0.0;
     }
 
     double G = (cosOmegaX * cosOmegaY) / (distance * distance);
 
-    double Le = lightSource.getWatt() / (lightArea * M_PI);
+    double Le = lightSource.getWatt() / (M_PI);
 
-    double E = isVisible * Le * G;
+    double E = isVisible * Le * G * lightArea;
 
     // Too bright / pi
     return (this->rayColor * E);
