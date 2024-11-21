@@ -65,7 +65,7 @@ int main()
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 0.1), Lamb));
 
     // ---- The lights ---- //
-    Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 200.0);
+    Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 500.0);
     Polygon::polygons.push_back(areaLight);
 
     // ---- The camera ---- //

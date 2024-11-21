@@ -8,6 +8,13 @@
 
 class Light;
 
+struct localDirection
+{
+public:
+    double azimuth = 0.0;
+    double inclination = 0.0;
+};
+
 class Ray
 {
 public:
@@ -29,6 +36,12 @@ public:
 
     glm::dvec3 getColorOfRayPath(Light &lightSource);
     glm::dvec3 calculateIrradiance(Light &lightSource);
+
+    // Functions for random ray direction
+    localDirection getRandomLocalDirection();
+    glm::dvec3 getRandomDirection(glm::dvec3 normals);
+    glm::dvec3 hemisphericalToCartesian(localDirection dir);
+    glm::dvec3 localCartesianToWorldCartesian(glm::dvec3 localDir, glm::dvec3 normals);
 
     int isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource);
 

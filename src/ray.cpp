@@ -41,6 +41,7 @@ glm::dvec3 Ray::position(double t) const
 Ray *Ray::calculateRayPath()
 {
     bool didntHit = true;
+    bool somethingHit = false;
     Material::MaterialType materialType;
     double smallestTLength = std::numeric_limits<double>::infinity();
     glm::dvec3 possibleIntersectionPoint(0, 0, 0);
@@ -51,8 +52,10 @@ Ray *Ray::calculateRayPath()
     for (auto &p : polygons)
     {
         glm::dvec3 intersectionPoint = p->isHit(*this);
-        if (!glm::all(glm::isnan(intersectionPoint)))
+        didntHit = glm::all(glm::isnan(intersectionPoint));
+        if (!didntHit)
         {
+            somethingHit = true;
             double currentTLength = glm::length(intersectionPoint - this->origin());
             if (currentTLength < smallestTLength)
             {
@@ -81,10 +84,11 @@ Ray *Ray::calculateRayPath()
         break;
     case Material::MaterialType::Lambertian:
         this->rayColor = Polygon::polygons[objectIndex]->getColor();
-        // srand(time(0)); // Seed the random number generator
-        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
 
-        return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
+        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+
+        // return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
+        return this;
     }
 
     return this;
@@ -92,9 +96,17 @@ Ray *Ray::calculateRayPath()
 
 Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 {
-    // New direction from reflec
-    glm::dvec3 inDirection = this->rayDirection;
-    glm::dvec3 newDirection = inDirection - 2.0 * ((glm::dot(inDirection, this->rayHitNormal)) * this->rayHitNormal);
+    // New direction from reflect
+    glm::dvec3 newDirection(0, 0, 0);
+    if (this->hitObjectMaterial == Material::Lambertian)
+    {
+        newDirection = getRandomDirection(this->rayHitNormal);
+    }
+    else
+    {
+        glm::dvec3 inDirection = this->rayDirection;
+        newDirection = inDirection - 2.0 * ((glm::dot(inDirection, this->rayHitNormal)) * this->rayHitNormal);
+    }
 
     Ray *newRay = new Ray(hitPosition, newDirection);
     this->nextRay = newRay;
@@ -145,9 +157,9 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     case Material::MaterialType::Lambertian:
         newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
-        if (randomNum >= 0.2f)
+        if (randomNum >= 0.5f)
         {
-            std::cout << randomNum << " ";
+            // std::cout << randomNum << " ";
 
             return newRay->calculateRayPath(possibleIntersectionPoint);
         }
@@ -160,30 +172,16 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 
 glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 {
-    Ray *rayPointer = this;
-    int rayHist = 1;
+    if (this->nextRay == nullptr)
+    {
+        return this->calculateIrradiance(lightSource);
+    }
+    Ray *rayPointer = this->nextRay;
     // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
     //  Loop to get to end of ray path
-    while (rayPointer->nextRay != nullptr)
-    {
 
-        rayPointer = rayPointer->nextRay;
-        rayHist++;
-    }
-    std::cout << rayHist;
+    glm::dvec3 totColor = glm::dvec3(0, 0, 0);
 
-    glm::dvec3 totColor = glm::dvec3(1, 0, 0);
-    /*  switch (rayPointer->hitObjectMaterial)
-     {
-     case Material::MaterialType::Mirror:
-         break;
-     case Material::MaterialType::Lambertian:
-         totColor = rayPointer->calculateIrradiance(lightSource);
-         break;
-     case Material::MaterialType::Light:
-         totColor = glm::dvec3(1, 1, 1);
-         break;
-     } */
     // Get color from end -> start
     while (rayPointer->prevRay != nullptr)
     {
@@ -243,7 +241,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     double E = isVisible * Le * G;
 
     // Too bright / pi
-    return this->rayColor * E;
+    return (this->rayColor * E);
 }
 
 int Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource)
@@ -291,4 +289,54 @@ glm::dvec3 Ray::calculateOffsetRay(double pixelSizeX, double pixelSizeY)
     return newRayDirection;
 }
 
+localDirection Ray::getRandomLocalDirection()
+{
+    localDirection result;
+
+    double azimuth = (2.0 * M_PI) * ((double)rand()) / (((double)RAND_MAX));
+    double inclination = ((double)rand()) / (((double)RAND_MAX));
+
+    result.azimuth = azimuth;
+    result.inclination = acos(sqrt(1.0 - inclination));
+
+    return result;
+}
+
+glm::dvec3 Ray::getRandomDirection(glm::dvec3 normals)
+{
+    localDirection dir = getRandomLocalDirection();
+
+    glm::dvec3 localDir = hemisphericalToCartesian(dir);
+    glm::dvec3 worldDir = glm::normalize(localCartesianToWorldCartesian(localDir, normals));
+
+    if (glm::dot(worldDir, normals) < 0.0f)
+    {
+        worldDir = -1.0 * worldDir;
+    }
+
+    return worldDir;
+}
+glm::dvec3 Ray::hemisphericalToCartesian(localDirection dir)
+{
+    return glm::dvec3(cos(dir.azimuth) * sin(dir.inclination), sin(dir.azimuth) * sin(dir.inclination), cos(dir.inclination));
+}
+glm::dvec3 Ray::localCartesianToWorldCartesian(glm::dvec3 localDir, glm::dvec3 normals)
+{
+    double x_0 = localDir.x;
+    double y_0 = localDir.y;
+    double z_0 = localDir.z;
+
+    glm::dvec3 z_l = glm::normalize(normals);
+
+    glm::dvec3 arbitraryVec = (glm::abs(z_l.x) > 0.99) ? glm::dvec3(0.0, 1.0, 0.0) : glm::dvec3(1.0, 0.0, 0.0);
+
+    glm::dvec3 x_l = glm::normalize(glm::cross(arbitraryVec, z_l));
+    glm::dvec3 y_l = glm::cross(z_l, x_l);
+
+    glm::dvec3 res(x_0 * x_l.x + y_0 * y_l.x + z_0 * z_l.x,
+                   x_0 * x_l.y + y_0 * y_l.y + z_0 * z_l.y,
+                   x_0 * x_l.z + y_0 * y_l.z + z_0 * z_l.z);
+
+    return glm::normalize(res);
+}
 #endif
