@@ -43,7 +43,7 @@ public:
     glm::dvec3 hemisphericalToCartesian(localDirection dir);
     glm::dvec3 localCartesianToWorldCartesian(glm::dvec3 localDir, glm::dvec3 normals);
 
-    int isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource);
+    double isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource);
 
     // Ray stugg
     glm::dvec3 rayOrigin;

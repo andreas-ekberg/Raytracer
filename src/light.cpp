@@ -13,9 +13,9 @@ Light::Light(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm
     p[1] = topRight;
     p[2] = bottomLeft;
     p[3] = bottomRight;
-    normal = glm::normalize(glm::cross(p[1] - p[0], p[2] - p[0]));
+    normal = glm::normalize(glm::cross(p[2] - p[0], p[1] - p[0]));
     color = glm::dvec3(1, 1, 1);
-    area = glm::distance(p[0], p[1]) * glm::distance(p[2], p[3]);
+    area = glm::distance(p[0], p[1]) * glm::distance(p[0], p[2]);
     watt = _watt;
 }
 

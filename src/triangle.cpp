@@ -2,6 +2,7 @@
 #define TRIANGLE_CPP
 
 #include "headers/triangle.hpp"
+#include <iostream>
 
 Triangle::Triangle()
 {
@@ -38,14 +39,24 @@ glm::dvec3 Triangle::isHit(Ray ray)
     glm::dvec3 P = glm::cross(direction, e2);
     glm::dvec3 Q = glm::cross(T, e1);
 
+    double det = glm::dot(P, e1);
+
+    if(abs(det) < DBL_EPSILON){
+        return glm::dvec3(NAN, NAN, NAN);
+    }
+
     glm::dvec3 tuv = (1.0 / glm::dot(P, e1)) * glm::dvec3(glm::dot(Q, e2), glm::dot(P, T), glm::dot(Q, direction));
     double t = tuv.x;
     if (t < DBL_EPSILON || tuv.y <= 0.0 || tuv.z <= 0.0 || tuv.y + tuv.z >= 1.0)
     {
         return glm::dvec3(NAN, NAN, NAN);
     }
-    glm::dvec3 intersectionPoint = getPositionBarycentric(tuv.y, tuv.z);
-    return intersectionPoint;
+
+    if(t > DBL_EPSILON){
+        return getPositionBarycentric(tuv.y, tuv.z); // Intersection point
+    }
+
+    return glm::dvec3(NAN, NAN, NAN);
 }
 
 glm::dvec3 Triangle::getPositionBarycentric(double u, double v)

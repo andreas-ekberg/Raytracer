@@ -28,7 +28,7 @@ glm::dvec3 Rectangle::isHit(Ray ray)
     glm::dvec3 direction = ray.rayDirection;
     double t = glm::dot((v - s), normal) / glm::dot(direction, normal);
 
-    if (t < DBL_EPSILON)
+    if (t < 1e-3)
     {
         return glm::dvec3(NAN, NAN, NAN);
     }

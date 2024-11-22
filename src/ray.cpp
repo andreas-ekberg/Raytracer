@@ -172,9 +172,15 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 
 glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 {
-    if (this->nextRay == nullptr)
+    if (this->nextRay == nullptr) // Om det är en studs
     {
-        return this->calculateIrradiance(lightSource);
+        if(this->hitObjectMaterial == Material::MaterialType::Light){
+            return glm::dvec3(1, 1, 1);
+        }
+        else {
+            return this->calculateIrradiance(lightSource);
+
+        }
     }
     Ray *rayPointer = this->nextRay;
     // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
@@ -193,12 +199,13 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
             break;
         case Material::MaterialType::Lambertian:
             irradiance = rayPointer->calculateIrradiance(lightSource);
-            totColor = irradiance + rayPointer->rayColor * totColor;
+            totColor = irradiance + (rayPointer->rayColor * totColor);
             // std::cout << irradiance.x << " " << irradiance.y << " " << irradiance.z << " \n";
 
             break;
         case Material::MaterialType::Light:
             totColor = glm::dvec3(1, 1, 1);
+            return totColor;
             break;
         }
         rayPointer = rayPointer->prevRay;
@@ -217,6 +224,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
     glm::dvec3 lightNormal = lightSource.getNormal();
     double isVisible = (double)this->isVisible(this->rayHitPoint, randomPoint, lightSource);
+    //double isVisible = 1.0;
 
     double lightArea = lightSource.getArea();
 
@@ -244,39 +252,43 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     return (this->rayColor * E);
 }
 
-int Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource)
+double Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource)
 {
 
     double smallestTLength = (double)INFINITY;
     int indexCounter = 0;
     int objectIndex = 0;
 
-    Ray rayCast = Ray(randomPointOnLight, glm::normalize(intersectionPoint - randomPointOnLight));
+    glm::dvec3 rayOrigin = randomPointOnLight + 1e-3 * glm::normalize(intersectionPoint - randomPointOnLight);
+    Ray rayCast = Ray(rayOrigin, glm::normalize(intersectionPoint - randomPointOnLight));
+
+    double lengthBetweenLightAndObject = glm::length(intersectionPoint - rayOrigin);
+
     for (auto &p : Polygon::polygons)
     {
+        if(p->getPolygonMaterial().materialType == Material::MaterialType::Light){
+            continue;
+        }
+        glm::dvec3 intersectionPoints = p->isHit(rayCast);
 
-        glm::dvec3 intersectionPoint = p->isHit(rayCast);
-
-        double currentTLength = glm::length(intersectionPoint - rayCast.origin());
-
-        if (smallestTLength > currentTLength)
-        {
-            smallestTLength = currentTLength;
-            objectIndex = indexCounter;
+        if(glm::any(glm::isnan(intersectionPoints))){
+            continue;
         }
 
-        indexCounter++;
+        double currentTLength = glm::length(intersectionPoints - rayCast.origin());
+
+        if (currentTLength + 0.0000001 < lengthBetweenLightAndObject && currentTLength > DBL_EPSILON)
+        {
+            // std::cout << "HIT SOMETHING:" << std::endl;
+            // // std::cout << "   origin:" << << std::endl;
+            // // std::cout << "   direction" << << std::endl;
+            // std::cout << "   length:" << currentTLength << " -- lightLength:" << lengthBetweenLightAndObject << std::endl;
+            return 0.0;
+        }
     }
 
-    double lengthBetweenLightAndObject = glm::length(intersectionPoint - randomPointOnLight);
-    if (lengthBetweenLightAndObject != smallestTLength)
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
+    return 1.0;
+
 }
 glm::dvec3 Ray::calculateOffsetRay(double pixelSizeX, double pixelSizeY)
 {
