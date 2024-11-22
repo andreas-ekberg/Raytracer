@@ -47,31 +47,33 @@ int main()
 
     // ---- The room ---- //
     // std::vector<Polygon *> polygons;
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(1, 0.1, 0.1), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0.1, 1, 0.1), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0.1, 0.1, 1), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0.1, 0.1, 1), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0.1, 1, 1), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(1, 0.1, 1), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(0.8, 0.2, 0.2), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0.2, 0.8, 0.2), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0.2, 0.2, 0.8), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0.2, 0.2, 0.8), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0.2, 0.8, 0.8), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(0.8, 0.2, 0.8), Lamb));
 
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0.5, 0.5, 0.5), Lamb));
 
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(6, -5, -2), glm::dvec3(7, -5, -2), glm::dvec3(6, -6, -2), glm::dvec3(7, -6, -2), color(0, 1, 0), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(7, 4, 3), glm::dvec3(7, 5, 3), glm::dvec3(6, 4, 3), glm::dvec3(6, 5, 3), color(0.2, 0.8, 0.2), Lamb));
 
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(1, 0.1, 0.1), Lamb));
-    Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(1, 1, 0.1), Lamb));
-    Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(1, 1, 0.1), Lamb));
-    Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(0, 1, 0.1), Lamb));
-    Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0, 1, 0.1), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, 5), color(0.8, 0.2, 0.2), Lamb));
+
+    
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), color(0.8, 0.8, 0.2), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0.8, 0.8, 0.2), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(0.2, 0.8, 0.2), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0.2, 0.8, 0.2), Lamb));
 
     // ---- The lights ---- //
-    Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 500.0);
+    Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 200.0);
     Polygon::polygons.push_back(areaLight);
 
     // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
 
-    int n = 48;
+    int n = 48*4;
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)

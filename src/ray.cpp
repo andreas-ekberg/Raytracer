@@ -216,7 +216,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     glm::dvec3 randomPoint = lightSource.getRandomPoint();
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
     glm::dvec3 lightNormal = lightSource.getNormal();
-    double isVisible = this->isVisible(this->rayHitPoint, randomPoint, lightSource);
+    double isVisible = (double)this->isVisible(this->rayHitPoint, randomPoint, lightSource);
 
     double lightArea = lightSource.getArea();
 
