@@ -184,20 +184,23 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
             return this->calculateIrradiance(lightSource);
         }
     }
+
     Ray *rayPointer = this->nextRay;
     // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
     //  Loop to get to end of ray path
 
+
     glm::dvec3 totColor = glm::dvec3(0, 0, 0);
 
     // Get color from end -> start
-    while (rayPointer->prevRay != nullptr)
+    while (true)
     {
         glm::dvec3 irradiance(0, 0, 0);
         switch (rayPointer->hitObjectMaterial)
         {
         case Material::MaterialType::Mirror:
             totColor = glm::dvec3(0, 0, 0);
+            return totColor;
             break;
         case Material::MaterialType::Lambertian:
             irradiance = rayPointer->calculateIrradiance(lightSource);
@@ -210,7 +213,12 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
             return totColor;
             break;
         }
+        if(rayPointer->prevRay != nullptr){
+            break;
+        }
         rayPointer = rayPointer->prevRay;
+
+
         // std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " I WHIEL---------------------------------------------- \n";
     }
     // std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " \n";
