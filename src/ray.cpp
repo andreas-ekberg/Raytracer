@@ -76,7 +76,7 @@ Ray *Ray::calculateRayPath()
     switch (materialType)
     {
     case Material::MaterialType::Mirror:
-        this->rayColor = glm::dvec3(1, 1, 1);
+        this->rayColor = glm::dvec3(0, 0, 0);
         return this->calculateRayPath(possibleIntersectionPoint);
         break;
     case Material::MaterialType::Light:
@@ -88,7 +88,7 @@ Ray *Ray::calculateRayPath()
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
 
         return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
-        //return this;
+        // return this;
     }
 
     return this;
@@ -148,7 +148,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     {
     case Material::MaterialType::Mirror:
         // std::cout << "hit mirror";
-        newRay->rayColor = glm::dvec3(1, 1, 1);
+        newRay->rayColor = glm::dvec3(0, 0, 0);
         return newRay->calculateRayPath(possibleIntersectionPoint);
         break;
     case Material::MaterialType::Light:
@@ -174,12 +174,13 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 {
     if (this->nextRay == nullptr) // Om det är en studs
     {
-        if(this->hitObjectMaterial == Material::MaterialType::Light){
+        if (this->hitObjectMaterial == Material::MaterialType::Light)
+        {
             return glm::dvec3(1, 1, 1);
         }
-        else {
+        else
+        {
             return this->calculateIrradiance(lightSource);
-
         }
     }
     Ray *rayPointer = this->nextRay;
@@ -195,7 +196,7 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
         switch (rayPointer->hitObjectMaterial)
         {
         case Material::MaterialType::Mirror:
-            // totColor = totColor;
+            totColor = totColor;
             break;
         case Material::MaterialType::Lambertian:
             irradiance = rayPointer->calculateIrradiance(lightSource);
@@ -224,7 +225,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
     glm::dvec3 lightNormal = lightSource.getNormal();
     double isVisible = (double)this->isVisible(this->rayHitPoint, randomPoint, lightSource);
-    //double isVisible = 1.0;
+    // double isVisible = 1.0;
 
     double lightArea = lightSource.getArea();
 
@@ -266,12 +267,14 @@ double Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLi
 
     for (auto &p : Polygon::polygons)
     {
-        if(p->getPolygonMaterial().materialType == Material::MaterialType::Light){
+        if (p->getPolygonMaterial().materialType == Material::MaterialType::Light)
+        {
             continue;
         }
         glm::dvec3 intersectionPoints = p->isHit(rayCast);
 
-        if(glm::any(glm::isnan(intersectionPoints))){
+        if (glm::any(glm::isnan(intersectionPoints)))
+        {
             continue;
         }
 
@@ -288,7 +291,6 @@ double Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLi
     }
 
     return 1.0;
-
 }
 glm::dvec3 Ray::calculateOffsetRay(double pixelSizeX, double pixelSizeY)
 {

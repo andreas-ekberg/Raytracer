@@ -2,6 +2,7 @@
 #include <fstream>
 #include <ppl.h>
 #include <thread>
+#include <chrono>
 
 #include "headers/color.hpp"
 #include "headers/camera.hpp"
@@ -16,6 +17,7 @@
 
 using namespace std;
 using namespace glm;
+using namespace std::chrono;
 
 std::vector<Polygon *> Polygon::polygons;
 
@@ -33,6 +35,7 @@ int main()
         return 1;
     }
 
+    auto render_start = high_resolution_clock::now();
     // Render
     // Pixels are written in a row left -> right and the rows top -> bottom
     image_file << "P3\n"
@@ -48,10 +51,10 @@ int main()
     // ---- The room ---- //
     // std::vector<Polygon *> polygons;
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, 6, 5), glm::dvec3(13, 0, 5), glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), color(0.8, 0.2, 0.2), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0.2, 0.8, 0.2), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(13, 0, 5), glm::dvec3(10, -6, 5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0.2, 0.8, 0.2), recMirror));
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(10, -6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, -6, -5), glm::dvec3(0, -6, -5), color(0.2, 0.2, 0.8), Lamb));
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(10, 6, 5), glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), color(0.2, 0.2, 0.8), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0.2, 0.8, 0.8), Lamb));
+    Polygon::polygons.push_back(new Rectangle(glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0.8, 0.2, 0.2), Lamb));
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), color(0.8, 0.2, 0.8), Lamb));
 
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(0.5, 0.5, 0.5), Lamb));
@@ -60,21 +63,20 @@ int main()
 
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, 6, 5), glm::dvec3(10, -6, 5), color(0.8, 0.8, 0.8), Lamb));
 
-    
-    Polygon::polygons.push_back(new Triangle(glm::dvec3(13, 0, 5), glm::dvec3(10, 6, 5), glm::dvec3(10, -6, 5), color(0.8, 0.8, 0.2), Lamb));
+    Polygon::polygons.push_back(new Triangle(glm::dvec3(13, 0, 5), glm::dvec3(10, 6, 5), glm::dvec3(10, -6, 5), color(0.5, 0.5, 0.5), Lamb));
     Polygon::polygons.push_back(new Triangle(glm::dvec3(10, 6, -5), glm::dvec3(13, 0, -5), glm::dvec3(10, -6, -5), color(0.8, 0.8, 0.2), Lamb));
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(0.2, 0.8, 0.2), Lamb));
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(-3, 0, -5), glm::dvec3(0, 6, -5), color(0.2, 0.8, 0.2), Lamb));
 
     // ---- The lights ---- //
-    //Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 200.0);
-    Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 200.0);
+    // Light *areaLight = new Light(glm::dvec3(7, 0.5, 4.99), glm::dvec3(8, 0.5, 4.99), glm::dvec3(7, -0.5, 4.99), glm::dvec3(8, -0.5, 4.99), 200.0);
+    Light *areaLight = new Light(glm::dvec3(2, 0.5, 4.99), glm::dvec3(2, -0.5, 4.99), glm::dvec3(3, 0.5, 4.99), glm::dvec3(3, -0.5, 4.99), 200.0);
     Polygon::polygons.push_back(areaLight);
 
     // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
 
-    int n = 400;
+    int n = 68;
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)
@@ -115,4 +117,9 @@ int main()
 
     clog
         << "\rDone.                 \n";
+
+    auto render_end = high_resolution_clock::now();
+    auto render_duration = duration_cast<seconds>(render_end - render_start);
+
+    cout << "Render time: " << render_duration.count() << " seconds." << endl;
 }
