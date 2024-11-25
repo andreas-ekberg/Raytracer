@@ -15,7 +15,7 @@ Triangle::Triangle(glm::dvec3 _p1, glm::dvec3 _p2, glm::dvec3 _p3, glm::dvec3 _c
     p[2] = _p3;
     material.setMaterialColor(_color);
     color = _color;
-    normal = glm::normalize(glm::cross(p[1] - p[2], p[0] - p[2]));
+    normal = glm::normalize(glm::cross(p[1] - p[0], p[2] - p[0]));
     material = materialType;
 }
 
@@ -41,7 +41,8 @@ glm::dvec3 Triangle::isHit(Ray ray)
 
     double det = glm::dot(P, e1);
 
-    if(abs(det) < DBL_EPSILON){
+    if (abs(det) < DBL_EPSILON)
+    {
         return glm::dvec3(NAN, NAN, NAN);
     }
 
@@ -52,7 +53,8 @@ glm::dvec3 Triangle::isHit(Ray ray)
         return glm::dvec3(NAN, NAN, NAN);
     }
 
-    if(t > DBL_EPSILON){
+    if (t > DBL_EPSILON)
+    {
         return getPositionBarycentric(tuv.y, tuv.z); // Intersection point
     }
 

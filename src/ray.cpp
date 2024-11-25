@@ -81,6 +81,7 @@ Ray *Ray::calculateRayPath()
         break;
     case Material::MaterialType::Light:
         this->rayColor = glm::dvec3(1, 1, 1);
+        return this;
         break;
     case Material::MaterialType::Lambertian:
         this->rayColor = Polygon::polygons[objectIndex]->getColor();
@@ -102,7 +103,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     {
         newDirection = getRandomDirection(this->rayHitNormal);
     }
-    else
+    else if (this->hitObjectMaterial == Material::Mirror)
     {
         glm::dvec3 inDirection = this->rayDirection;
         newDirection = inDirection - 2.0 * ((glm::dot(inDirection, this->rayHitNormal)) * this->rayHitNormal);
@@ -156,7 +157,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
         break;
     case Material::MaterialType::Lambertian:
         newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
-        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (2 - 1)));
+        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
         if (randomNum >= 0.5f)
         {
             // std::cout << randomNum << " ";
@@ -196,7 +197,7 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
         switch (rayPointer->hitObjectMaterial)
         {
         case Material::MaterialType::Mirror:
-            totColor = totColor;
+            totColor = glm::dvec3(0, 0, 0);
             break;
         case Material::MaterialType::Lambertian:
             irradiance = rayPointer->calculateIrradiance(lightSource);
