@@ -30,7 +30,10 @@ Ray::~Ray()
     }
 }
 
-const glm::dvec3 &Ray::origin() const { return rayOrigin; }
+const glm::dvec3 &Ray::origin() const { 
+    glm::dvec3 a = rayOrigin;
+    return rayOrigin; 
+}
 const glm::dvec3 &Ray::direction() const { return rayDirection; }
 
 glm::dvec3 Ray::position(double t) const
@@ -99,17 +102,17 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 {
     // New direction from reflect
     glm::dvec3 newDirection(0, 0, 0);
-    if (this->hitObjectMaterial == Material::Lambertian)
+    if (this->hitObjectMaterial == Material::MaterialType::Lambertian)
     {
         newDirection = getRandomDirection(this->rayHitNormal);
     }
-    else if (this->hitObjectMaterial == Material::Mirror)
+    else if (this->hitObjectMaterial == Material::MaterialType::Mirror)
     {
         glm::dvec3 inDirection = this->rayDirection;
         newDirection = inDirection - 2.0 * ((glm::dot(inDirection, this->rayHitNormal)) * this->rayHitNormal);
     }
-
-    Ray *newRay = new Ray(hitPosition, newDirection);
+    glm::dvec3 offsetOrigin = hitPosition + 1e-3 * newDirection;
+    Ray *newRay = new Ray(offsetOrigin, newDirection);
     this->nextRay = newRay;
     newRay->prevRay = this;
 
@@ -160,20 +163,18 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
         if (randomNum >= 0.5f)
         {
-            // std::cout << randomNum << " ";
-
             return newRay->calculateRayPath(possibleIntersectionPoint);
         }
         else
-            return this;
+            return newRay;
     }
 
-    return this;
+    return newRay;
 }
 
 glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 {
-    if (this->nextRay == nullptr) // Om det är en studs
+    /* if (this->nextRay == nullptr) // Om det är sista rayen i pathen
     {
         if (this->hitObjectMaterial == Material::MaterialType::Light)
         {
@@ -183,29 +184,31 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
         {
             return this->calculateIrradiance(lightSource);
         }
-    }
+    } */
 
-    Ray *rayPointer = this->nextRay;
+    Ray *rayPointer = this;
     // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
     //  Loop to get to end of ray path
 
 
     glm::dvec3 totColor = glm::dvec3(0, 0, 0);
 
+    if(rayPointer->hitObjectMaterial == Material::MaterialType::Light)
+    {
+        return glm::dvec3(1, 1, 1);
+    }
+
     // Get color from end -> start
-    while (true)
+    while (rayPointer != nullptr)
     {
         glm::dvec3 irradiance(0, 0, 0);
         switch (rayPointer->hitObjectMaterial)
         {
         case Material::MaterialType::Mirror:
-            totColor = glm::dvec3(0, 0, 0);
-            return totColor;
             break;
         case Material::MaterialType::Lambertian:
             irradiance = rayPointer->calculateIrradiance(lightSource);
             totColor = irradiance + (rayPointer->rayColor * totColor);
-            // std::cout << irradiance.x << " " << irradiance.y << " " << irradiance.z << " \n";
 
             break;
         case Material::MaterialType::Light:
@@ -213,16 +216,10 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
             return totColor;
             break;
         }
-        if(rayPointer->prevRay != nullptr){
-            break;
-        }
         rayPointer = rayPointer->prevRay;
 
-
-        // std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " I WHIEL---------------------------------------------- \n";
+        
     }
-    // std::cout << totColor.x << " " << totColor.y << " " << totColor.z << " \n";
-
     return totColor;
 }
 

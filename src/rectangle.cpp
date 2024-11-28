@@ -7,12 +7,12 @@ Rectangle::Rectangle()
 {
 }
 
-Rectangle::Rectangle(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, glm::dvec3 _color, Material materialType)
+Rectangle::Rectangle(glm::dvec3 topRight, glm::dvec3 topLeft, glm::dvec3 bottomRight, glm::dvec3 bottomLeft, glm::dvec3 _color, Material materialType)
 {
-    p[0] = topLeft;
-    p[1] = topRight;
-    p[2] = bottomLeft;
-    p[3] = bottomRight;
+    p[0] = topRight;
+    p[1] = topLeft;
+    p[2] = bottomRight;
+    p[3] = bottomLeft;
     color = _color;
     material.setMaterialColor(_color);
     normal = glm::normalize(glm::cross(p[3] - p[2], p[0] - p[2]));
