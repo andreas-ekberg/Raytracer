@@ -91,7 +91,7 @@ Ray *Ray::calculateRayPath()
 
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
 
-        return randomNum >= (float)0.5 ? this->calculateRayPath(possibleIntersectionPoint) : this;
+        return this->calculateRayPath(possibleIntersectionPoint);
         // return this;
     }
 
@@ -116,15 +116,20 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
             glm::dvec3 worldDir = glm::normalize(localCartesianToWorldCartesian(localDir, this->rayHitNormal));
 
             newDirection = worldDir;
-        }else
+        }
+        else
         {
             continueRay = false;
         }
     }
     else if (this->hitObjectMaterial == Material::MaterialType::Mirror)
     {
+        continueRay = true;
         glm::dvec3 inDirection = this->rayDirection;
         newDirection = inDirection - 2.0 * ((glm::dot(inDirection, this->rayHitNormal)) * this->rayHitNormal);
+    }
+    if(!continueRay){
+        return this;
     }
     glm::dvec3 offsetOrigin = hitPosition + 1e-3 * newDirection;
     Ray *newRay = new Ray(offsetOrigin, newDirection);
@@ -175,13 +180,8 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
         break;
     case Material::MaterialType::Lambertian:
         newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
-        //double randomNum = ((double)rand()) / ((double)RAND_MAX); // Random between 0 - 1
-        if (continueRay)
-        {
-            return newRay->calculateRayPath(possibleIntersectionPoint);
-        }
-        else
-            return newRay;
+        return newRay->calculateRayPath(possibleIntersectionPoint);
+        break;
     }
 
     return newRay;
