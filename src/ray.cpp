@@ -100,11 +100,26 @@ Ray *Ray::calculateRayPath()
 
 Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 {
+    bool continueRay = true;
     // New direction from reflect
     glm::dvec3 newDirection(0, 0, 0);
     if (this->hitObjectMaterial == Material::MaterialType::Lambertian)
     {
-        newDirection = getRandomDirection(this->rayHitNormal);
+        localDirection randomDir  = this->getRandomLocalDirection();
+
+        double randomNum = ((double)rand()) / ((double)RAND_MAX) < 0.5 ? 1.0 : 0.0; // Random between 0 - 1
+
+        if (randomDir.azimuth <= 2.0 * M_PI * randomNum)
+        {
+            continueRay = true;
+            glm::dvec3 localDir = hemisphericalToCartesian(randomDir);
+            glm::dvec3 worldDir = glm::normalize(localCartesianToWorldCartesian(localDir, this->rayHitNormal));
+
+            newDirection = worldDir;
+        }else
+        {
+            continueRay = false;
+        }
     }
     else if (this->hitObjectMaterial == Material::MaterialType::Mirror)
     {
@@ -156,12 +171,12 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
         return newRay->calculateRayPath(possibleIntersectionPoint);
         break;
     case Material::MaterialType::Light:
-        newRay->rayColor = glm::dvec3(1, 1, 1);
+        newRay->rayColor = glm::dvec3(0, 0, 1);
         break;
     case Material::MaterialType::Lambertian:
         newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
-        float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
-        if (randomNum >= 0.5f)
+        //double randomNum = ((double)rand()) / ((double)RAND_MAX); // Random between 0 - 1
+        if (continueRay)
         {
             return newRay->calculateRayPath(possibleIntersectionPoint);
         }
@@ -195,7 +210,8 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 
     if(rayPointer->hitObjectMaterial == Material::MaterialType::Light)
     {
-        return glm::dvec3(1, 1, 1);
+        double lightRadiance = lightSource.getWatt() / (M_PI * lightSource.getArea());
+        totColor = glm::dvec3(1, 1, 1)*lightRadiance;
     }
 
     // Get color from end -> start
@@ -212,8 +228,8 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
 
             break;
         case Material::MaterialType::Light:
-            totColor = glm::dvec3(1, 1, 1);
-            return totColor;
+            double lightRadiance = lightSource.getWatt() / (M_PI * lightSource.getArea());
+            totColor = glm::dvec3(1, 1, 1)*lightRadiance;
             break;
         }
         rayPointer = rayPointer->prevRay;
@@ -256,7 +272,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     double E = isVisible * Le * G * lightArea;
 
     // Too bright / pi
-    return (this->rayColor * E);
+    return (this->rayColor * E) / M_PI;
 }
 
 double Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource)
