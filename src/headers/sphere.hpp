@@ -4,21 +4,22 @@
 #include "../glmlib/glm.hpp"
 #include "../glmlib/gtx/string_cast.hpp"
 #include "ray.hpp"
+#include "polygon.hpp"
 
-class Sphere
+class Sphere : public Polygon
 {
 public:
     Sphere();
-    Sphere(const glm::dvec3 &center, float radius);
+    Sphere(glm::dvec3 center, double radius, glm::dvec3 _color, Material materialType);
+    ~Sphere();
 
-    bool hit(const Ray &r, float t_min, float t_max) const;
+    glm::dvec3 getColor() override;
+    glm::dvec3 isHit(Ray ray) override;
+    Material getPolygonMaterial() override;
+    glm::dvec3 getNormal(Ray ray) override;
 
-    glm::dvec3 center() const;
-    float radius() const;
-
-private:
-    glm::dvec3 m_center;
-    float m_radius;
+    glm::dvec3 sphereCenter;
+    double sphereRadius;
 };
 
 #endif // SPHERE_H

@@ -19,7 +19,7 @@ Light::Light(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm
     watt = _watt;
 }
 
-glm::dvec3 Light::getNormal()
+glm::dvec3 Light::getNormal(Ray ray)
 {
     return normal;
 }

@@ -15,7 +15,7 @@ public:
     Light();
     Light(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, double watt);
 
-    glm::dvec3 getNormal() override;
+    glm::dvec3 getNormal(Ray ray) override;
     Material getPolygonMaterial() override;
     glm::dvec3 getColor() override;
     glm::dvec3 isHit(Ray ray) override;

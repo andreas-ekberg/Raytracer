@@ -59,7 +59,7 @@ Material Rectangle::getPolygonMaterial()
     return material;
 }
 
-glm::dvec3 Rectangle::getNormal()
+glm::dvec3 Rectangle::getNormal(Ray ray)
 {
     return normal;
 }

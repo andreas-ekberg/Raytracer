@@ -22,7 +22,7 @@ public:
 
     Material getPolygonMaterial() override;
 
-    glm::dvec3 getNormal() override;
+    glm::dvec3 getNormal(Ray ray) override;
 
 private:
     glm::dvec3 p[4];

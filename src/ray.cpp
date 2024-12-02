@@ -73,7 +73,7 @@ Ray *Ray::calculateRayPath()
     materialType = polygons[objectIndex]->getPolygonMaterial().materialType;
     hitObjectMaterial = materialType;
 
-    rayHitNormal = polygons[objectIndex]->getNormal();
+    rayHitNormal = polygons[objectIndex]->getNormal(*this);
     rayHitPoint = possibleIntersectionPoint;
 
     switch (materialType)
@@ -107,7 +107,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     {
         localDirection randomDir  = this->getRandomLocalDirection();
 
-        double randomNum = ((double)rand()) / ((double)RAND_MAX) < 0.5 ? 1.0 : 0.0; // Random between 0 - 1
+        double randomNum = ((double)rand()) / ((double)RAND_MAX) < 0.5 ? 1.0 : 0.0; //  0 or 1
 
         if (randomDir.azimuth <= 2.0 * M_PI * randomNum)
         {
@@ -167,7 +167,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     materialType = Polygon::polygons[objectIndex]->getPolygonMaterial().materialType;
 
     newRay->hitObjectMaterial = materialType;
-    newRay->rayHitNormal = Polygon::polygons[objectIndex]->getNormal();
+    newRay->rayHitNormal = Polygon::polygons[objectIndex]->getNormal(*newRay);
     switch (materialType)
     {
     case Material::MaterialType::Mirror:
@@ -245,7 +245,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     // Random point på lampan
     glm::dvec3 randomPoint = lightSource.getRandomPoint();
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
-    glm::dvec3 lightNormal = lightSource.getNormal();
+    glm::dvec3 lightNormal = lightSource.getNormal(*this);
     double isVisible = (double)this->isVisible(this->rayHitPoint, randomPoint, lightSource);
     // double isVisible = 1.0;
 

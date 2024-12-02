@@ -71,7 +71,7 @@ Material Triangle::getPolygonMaterial()
     return material;
 }
 
-glm::dvec3 Triangle::getNormal()
+glm::dvec3 Triangle::getNormal(Ray ray)
 {
     return normal;
 }

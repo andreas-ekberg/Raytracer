@@ -14,7 +14,7 @@ public:
     virtual glm::dvec3 getColor() = 0;
 
     virtual Material getPolygonMaterial() = 0;
-    virtual glm::dvec3 getNormal() = 0;
+    virtual glm::dvec3 getNormal(Ray ray) = 0;
 
     static std::vector<Polygon *> polygons;
 
