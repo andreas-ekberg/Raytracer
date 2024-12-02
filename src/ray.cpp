@@ -73,8 +73,8 @@ Ray *Ray::calculateRayPath()
     materialType = polygons[objectIndex]->getPolygonMaterial().materialType;
     hitObjectMaterial = materialType;
 
-    rayHitNormal = polygons[objectIndex]->getNormal(*this);
     rayHitPoint = possibleIntersectionPoint;
+    rayHitNormal = polygons[objectIndex]->getNormal(*this);
 
     switch (materialType)
     {
@@ -168,6 +168,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 
     newRay->hitObjectMaterial = materialType;
     newRay->rayHitNormal = Polygon::polygons[objectIndex]->getNormal(*newRay);
+    
     switch (materialType)
     {
     case Material::MaterialType::Mirror:
