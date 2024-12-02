@@ -72,7 +72,7 @@ int main()
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(1, 1, 1), Lamb));
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(0, 6, -5), glm::dvec3(-3, 0, -5), color(1, 1, 1), Lamb));
 
-    Polygon::polygons.push_back(new Sphere(glm::dvec3(8.0, 0.0, 0.0), 2.0, color(0.8, 0.8, 0.8), Lamb));
+    Polygon::polygons.push_back(new Sphere(glm::dvec3(8.0, 0.0, 0.0), 2.0, color(0.8, 0.8, 0.8), recMirror));
 
     // ---- The lights ---- //
     Light *areaLight = new Light(glm::dvec3(5.0, 1.5, 4.99), glm::dvec3(5.0, -1.5, 4.99), glm::dvec3(8.0, 1.5, 4.99), glm::dvec3(8.0, -1.5, 4.99), 50.0);

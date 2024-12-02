@@ -131,8 +131,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     if(!continueRay){
         return this;
     }
-    glm::dvec3 offsetOrigin = hitPosition + 1e-3 * newDirection;
-    Ray *newRay = new Ray(offsetOrigin, newDirection);
+    Ray *newRay = new Ray(hitPosition, newDirection);
     this->nextRay = newRay;
     newRay->prevRay = this;
 
@@ -168,7 +167,7 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
 
     newRay->hitObjectMaterial = materialType;
     newRay->rayHitNormal = Polygon::polygons[objectIndex]->getNormal(*newRay);
-    
+
     switch (materialType)
     {
     case Material::MaterialType::Mirror:
