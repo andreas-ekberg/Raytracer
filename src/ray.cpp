@@ -23,11 +23,7 @@ Ray::Ray(const glm::dvec3 &origin, const glm::dvec3 &direction) : rayOrigin(orig
 
 Ray::~Ray()
 {
-    if (nextRay != nullptr)
-    {
-        delete nextRay;
-        nextRay = nullptr;
-    }
+    delete nextRay;
 }
 
 const glm::dvec3 &Ray::origin() const { 

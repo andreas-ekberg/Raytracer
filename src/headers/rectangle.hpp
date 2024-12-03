@@ -16,7 +16,7 @@ public:
     // Destructor
     ~Rectangle();
 
-    glm::dvec3 isHit(Ray ray) override;
+    glm::dvec3 isHit(Ray &ray) override;
 
     glm::dvec3 getColor() override;
 

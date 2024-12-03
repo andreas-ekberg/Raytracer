@@ -18,7 +18,7 @@ Sphere::Sphere(glm::dvec3 center, double radius, glm::dvec3 _color, Material mat
 
 Sphere::~Sphere() {}
 
-glm::dvec3 Sphere::isHit(Ray ray){
+glm::dvec3 Sphere::isHit(Ray &ray){
     glm::dvec3 rayNormalized = glm::normalize(ray.rayDirection);
 
     double c1 = glm::dot(rayNormalized, rayNormalized);

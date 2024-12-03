@@ -27,8 +27,8 @@ int main()
 {
     HelperFunctions theHelperFunctions = HelperFunctions();
     // Image size
-    int imageWidth = 800;
-    int imageHeight = 800;
+    int imageWidth = 400;
+    int imageHeight = 400;
 
     ofstream image_file("image.ppm");
     if (!image_file)
@@ -83,7 +83,7 @@ int main()
     // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
 
-    int n = 128*8; // Number of samples per pixel
+    int n = 10; // Number of samples per pixel
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)

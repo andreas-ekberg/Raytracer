@@ -34,7 +34,7 @@ glm::dvec3 Light::getColor()
     return color;
 }
 
-glm::dvec3 Light::isHit(Ray ray)
+glm::dvec3 Light::isHit(Ray &ray)
 {
     glm::dvec3 v = p[2];
     glm::dvec3 s = ray.rayOrigin;

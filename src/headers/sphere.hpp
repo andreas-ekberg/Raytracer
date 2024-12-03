@@ -14,7 +14,7 @@ public:
     ~Sphere();
 
     glm::dvec3 getColor() override;
-    glm::dvec3 isHit(Ray ray) override;
+    glm::dvec3 isHit(Ray &ray) override;
     Material getPolygonMaterial() override;
     glm::dvec3 getNormal(Ray &ray) override;
 

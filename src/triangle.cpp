@@ -24,7 +24,7 @@ glm::dvec3 Triangle::getColor()
     return color;
 }
 
-glm::dvec3 Triangle::isHit(Ray ray)
+glm::dvec3 Triangle::isHit(Ray &ray)
 {
     glm::dvec3 v0 = p[0];
     glm::dvec3 v1 = p[1];

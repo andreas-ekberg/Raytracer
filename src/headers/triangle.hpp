@@ -15,7 +15,7 @@ public:
 
     glm::dvec3 getColor() override;
 
-    glm::dvec3 isHit(Ray ray) override;
+    glm::dvec3 isHit(Ray &ray) override;
     glm::dvec3 getPositionBarycentric(double u, double v);
 
     Material getPolygonMaterial() override;
