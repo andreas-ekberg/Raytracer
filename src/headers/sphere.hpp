@@ -19,6 +19,7 @@ public:
     glm::dvec3 getNormal(Ray &ray) override;
 
     glm::dvec3 sphereCenter;
+    glm::dvec3 color;
     double sphereRadius;
 };
 

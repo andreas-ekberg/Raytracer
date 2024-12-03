@@ -27,8 +27,8 @@ int main()
 {
     HelperFunctions theHelperFunctions = HelperFunctions();
     // Image size
-    int imageWidth = 400;
-    int imageHeight = 400;
+    int imageWidth = 800;
+    int imageHeight = 800;
 
     ofstream image_file("image.ppm");
     if (!image_file)
@@ -62,7 +62,7 @@ int main()
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, -5), glm::dvec3(10, 6, -5), glm::dvec3(0, -6, -5), glm::dvec3(10, -6, -5), color(1, 1, 1), Lamb));
 
     //Polygon::polygons.push_back(new Rectangle(glm::dvec3(8, 0.5, -2), glm::dvec3(8, -0.5, -2), glm::dvec3(7, 0.5, -2), glm::dvec3(7, -0.5, -2), color(0.2, 0.8, 0.2), Lamb));
-    Polygon::polygons.push_back(new Rectangle(glm::dvec3(8, -5, -4), glm::dvec3(8, -5.8, -4), glm::dvec3(7, -5, -4), glm::dvec3(7, -5.8, -4), color(0.2, 0.8, 0.2), Lamb));
+    //Polygon::polygons.push_back(new Rectangle(glm::dvec3(8, -5, -4), glm::dvec3(8, -5.8, -4), glm::dvec3(7, -5, -4), glm::dvec3(7, -5.8, -4), color(0.2, 0.8, 0.2), Lamb));
 
     Polygon::polygons.push_back(new Rectangle(glm::dvec3(0, 6, 5), glm::dvec3(0, -6, 5), glm::dvec3(10, 6, 5), glm::dvec3(10, -6, 5), color(1, 1, 1), Lamb));
 
@@ -72,7 +72,8 @@ int main()
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, 5), glm::dvec3(-3, 0, 5), glm::dvec3(0, 6, 5), color(1, 1, 1), Lamb));
     Polygon::polygons.push_back(new Triangle(glm::dvec3(0, -6, -5), glm::dvec3(0, 6, -5), glm::dvec3(-3, 0, -5), color(1, 1, 1), Lamb));
 
-    Polygon::polygons.push_back(new Sphere(glm::dvec3(8.0, 0.0, 0.0), 2.0, color(0.8, 0.8, 0.8), recMirror));
+    Polygon::polygons.push_back(new Sphere(glm::dvec3(8.0, 2.0, -3.5), 1.5, color(0.2, 0.8, 0.8), recMirror));
+    Polygon::polygons.push_back(new Sphere(glm::dvec3(7.0, -4.2, -3.5), 1.5, color(0.2, 0.8, 0.8), Lamb));
 
     // ---- The lights ---- //
     Light *areaLight = new Light(glm::dvec3(5.0, 1.5, 4.99), glm::dvec3(5.0, -1.5, 4.99), glm::dvec3(8.0, 1.5, 4.99), glm::dvec3(8.0, -1.5, 4.99), 50.0);
@@ -82,7 +83,7 @@ int main()
     // ---- The camera ---- //
     Camera camera = Camera(glm::dvec3(0, -1, 1), glm::dvec3(0, 1, 1), glm::dvec3(0, -1, -1), glm::dvec3(0, 1, -1), glm::dvec3(-1, 0, 0), pixelSizeX, pixelSizeY, imageWidth, imageHeight);
 
-    int n = 10; // Number of samples per pixel
+    int n = 128*8; // Number of samples per pixel
     int rowsDone = 0;
 
     concurrency::parallel_for(size_t(0), (size_t)imageHeight, [&](size_t j)

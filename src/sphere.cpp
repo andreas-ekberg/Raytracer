@@ -9,6 +9,7 @@ Sphere::Sphere()
 
 Sphere::Sphere(glm::dvec3 center, double radius, glm::dvec3 _color, Material materialType)
 {
+    color = _color;
     material.setMaterialColor(_color);
     material = materialType;
     sphereCenter = center;
@@ -71,7 +72,7 @@ glm::dvec3 Sphere::isHit(Ray ray){
 
 glm::dvec3 Sphere::getColor()
 {
-    return material.getMaterialColor();
+    return color;
 }
 
 Material Sphere::getPolygonMaterial()

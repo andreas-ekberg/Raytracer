@@ -92,7 +92,7 @@ Ray *Ray::calculateRayPath()
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
 
         return this->calculateRayPath(possibleIntersectionPoint);
-        // return this;
+        //return this;
     }
 
     return this;
@@ -247,7 +247,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
     glm::dvec3 lightNormal = lightSource.getNormal(*this);
     double isVisible = (double)this->isVisible(this->rayHitPoint, randomPoint, lightSource);
-    // double isVisible = 1.0;
+    //double isVisible = 1.0;
 
     double lightArea = lightSource.getArea();
 
