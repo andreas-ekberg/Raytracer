@@ -15,14 +15,14 @@ public:
     Light();
     Light(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm::dvec3 bottomRight, double watt);
 
-    glm::dvec3 getNormal(Ray &ray) override;
+    glm::dvec3 getNormal(const Ray &ray) const override;
     Material getPolygonMaterial() override;
     glm::dvec3 getColor() override;
-    glm::dvec3 isHit(Ray &ray) override;
+    glm::dvec3 isHit(const Ray &ray)const  override;
 
-    glm::dvec3 getRandomPoint();
-    double getArea();
-    double getWatt();
+    glm::dvec3 getRandomPoint() const;
+    double getArea() const;
+    double  getWatt() const;
 
 private:
     glm::dvec3 p[4];

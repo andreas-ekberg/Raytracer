@@ -15,12 +15,12 @@ public:
 
     glm::dvec3 getColor() override;
 
-    glm::dvec3 isHit(Ray &ray) override;
-    glm::dvec3 getPositionBarycentric(double u, double v);
+    glm::dvec3 isHit(const Ray &ray) const override;
+    glm::dvec3 getPositionBarycentric(double u, double v) const;
 
     Material getPolygonMaterial() override;
 
-    glm::dvec3 getNormal(Ray &ray) override;
+    glm::dvec3 getNormal(const Ray &ray) const override;
 
 private:
     glm::dvec3 p[3];

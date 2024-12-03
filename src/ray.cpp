@@ -24,6 +24,8 @@ Ray::Ray(const glm::dvec3 &origin, const glm::dvec3 &direction) : rayOrigin(orig
 Ray::~Ray()
 {
     delete nextRay;
+
+ 
 }
 
 const glm::dvec3 &Ray::origin() const { 
@@ -76,7 +78,7 @@ Ray *Ray::calculateRayPath()
     {
     case Material::MaterialType::Mirror:
         this->rayColor = glm::dvec3(0, 0, 0);
-        return this->calculateRayPath(possibleIntersectionPoint);
+        return this->calculateRayPath(possibleIntersectionPoint, 1);
         break;
     case Material::MaterialType::Light:
         this->rayColor = glm::dvec3(1, 1, 1);
@@ -87,15 +89,18 @@ Ray *Ray::calculateRayPath()
 
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
 
-        return this->calculateRayPath(possibleIntersectionPoint);
+        return this->calculateRayPath(possibleIntersectionPoint, 1);
         //return this;
     }
 
     return this;
 }
 
-Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
+Ray *Ray::calculateRayPath(const glm::dvec3 &hitPosition, const int depth)
 {
+    if (depth > 5){
+        return this; 
+    }
     bool continueRay = true;
     // New direction from reflect
     glm::dvec3 newDirection(0, 0, 0);
@@ -169,39 +174,26 @@ Ray *Ray::calculateRayPath(glm::dvec3 &hitPosition)
     case Material::MaterialType::Mirror:
         // std::cout << "hit mirror";
         newRay->rayColor = glm::dvec3(0, 0, 0);
-        return newRay->calculateRayPath(possibleIntersectionPoint);
+        return newRay->calculateRayPath(possibleIntersectionPoint, depth + 1);
         break;
     case Material::MaterialType::Light:
         newRay->rayColor = glm::dvec3(0, 0, 1);
         break;
     case Material::MaterialType::Lambertian:
         newRay->rayColor = Polygon::polygons[objectIndex]->getColor();
-        return newRay->calculateRayPath(possibleIntersectionPoint);
+        return newRay->calculateRayPath(possibleIntersectionPoint, depth+1);
         break;
     }
 
     return newRay;
 }
 
-glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
+glm::dvec3 Ray::getColorOfRayPath(const Light &lightSource)
 {
-    /* if (this->nextRay == nullptr) // Om det är sista rayen i pathen
-    {
-        if (this->hitObjectMaterial == Material::MaterialType::Light)
-        {
-            return glm::dvec3(1, 1, 1);
-        }
-        else
-        {
-            return this->calculateIrradiance(lightSource);
-        }
-    } */
+    int depth = 1; 
 
     Ray *rayPointer = this;
-    // glm::dvec3 totColor = glm::dvec3(1, 1, 1);
-    //  Loop to get to end of ray path
-
-
+  
     glm::dvec3 totColor = glm::dvec3(0, 0, 0);
 
     if(rayPointer->hitObjectMaterial == Material::MaterialType::Light)
@@ -229,13 +221,16 @@ glm::dvec3 Ray::getColorOfRayPath(Light &lightSource)
             break;
         }
         rayPointer = rayPointer->prevRay;
-
+        depth++;
         
+    }
+    if (depth > 20) {
+        //std::cout << depth << " ";
     }
     return totColor;
 }
 
-glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
+glm::dvec3 Ray::calculateIrradiance(const Light &lightSource)
 {
 
     // Random point på lampan
@@ -271,7 +266,7 @@ glm::dvec3 Ray::calculateIrradiance(Light &lightSource)
     return (this->rayColor * E) / M_PI;
 }
 
-double Ray::isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource)
+double Ray::isVisible(const glm::dvec3 &intersectionPoint,const  glm::dvec3 &randomPointOnLight,const Light &lightSource) 
 {
 
     double smallestTLength = (double)INFINITY;
@@ -334,7 +329,7 @@ localDirection Ray::getRandomLocalDirection()
     return result;
 }
 
-glm::dvec3 Ray::getRandomDirection(glm::dvec3 normals)
+glm::dvec3 Ray::getRandomDirection(const glm::dvec3 &normals)
 {
     localDirection dir = getRandomLocalDirection();
 
@@ -348,11 +343,11 @@ glm::dvec3 Ray::getRandomDirection(glm::dvec3 normals)
 
     return worldDir;
 }
-glm::dvec3 Ray::hemisphericalToCartesian(localDirection dir)
+glm::dvec3 Ray::hemisphericalToCartesian(const localDirection &dir)
 {
     return glm::dvec3(cos(dir.azimuth) * sin(dir.inclination), sin(dir.azimuth) * sin(dir.inclination), cos(dir.inclination));
 }
-glm::dvec3 Ray::localCartesianToWorldCartesian(glm::dvec3 localDir, glm::dvec3 normals)
+glm::dvec3 Ray::localCartesianToWorldCartesian(const glm::dvec3 &localDir,const glm::dvec3 &normals)
 {
     double x_0 = localDir.x;
     double y_0 = localDir.y;

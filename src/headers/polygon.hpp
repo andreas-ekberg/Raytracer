@@ -9,12 +9,12 @@
 class Polygon
 {
 public:
-    virtual glm::dvec3 isHit(Ray &ray) = 0;
+    virtual glm::dvec3 isHit(const Ray &ray)const = 0;
 
     virtual glm::dvec3 getColor() = 0;
 
     virtual Material getPolygonMaterial() = 0;
-    virtual glm::dvec3 getNormal(Ray &ray) = 0;
+    virtual glm::dvec3 getNormal(const Ray &ray) const = 0;
 
     static std::vector<Polygon *> polygons;
 

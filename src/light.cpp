@@ -19,7 +19,7 @@ Light::Light(glm::dvec3 topLeft, glm::dvec3 topRight, glm::dvec3 bottomLeft, glm
     watt = _watt;
 }
 
-glm::dvec3 Light::getNormal(Ray &ray)
+glm::dvec3 Light::getNormal(const Ray &ray) const
 {
     return normal;
 }
@@ -34,7 +34,7 @@ glm::dvec3 Light::getColor()
     return color;
 }
 
-glm::dvec3 Light::isHit(Ray &ray)
+glm::dvec3 Light::isHit(const Ray &ray) const
 {
     glm::dvec3 v = p[2];
     glm::dvec3 s = ray.rayOrigin;
@@ -62,17 +62,17 @@ glm::dvec3 Light::isHit(Ray &ray)
     }
 }
 
-double Light::getArea()
+double Light::getArea() const
 {
     return this->area;
 }
 
-double Light::getWatt()
+double  Light::getWatt() const
 {
     return this->watt;
 }
 
-glm::dvec3 Light::getRandomPoint()
+glm::dvec3 Light::getRandomPoint() const
 {
     double randomX = ((double)rand()) / ((RAND_MAX + 1.0));
     double randomY = ((double)rand()) / ((RAND_MAX + 1.0));

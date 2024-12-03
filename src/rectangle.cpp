@@ -21,7 +21,7 @@ Rectangle::Rectangle(glm::dvec3 topRight, glm::dvec3 topLeft, glm::dvec3 bottomR
 
 Rectangle::~Rectangle() {}
 
-glm::dvec3 Rectangle::isHit(Ray &ray)
+glm::dvec3 Rectangle::isHit(const Ray &ray) const
 {
     glm::dvec3 v = p[2];
     glm::dvec3 s = ray.rayOrigin;
@@ -59,7 +59,7 @@ Material Rectangle::getPolygonMaterial()
     return material;
 }
 
-glm::dvec3 Rectangle::getNormal(Ray &ray)
+glm::dvec3 Rectangle::getNormal(const Ray &ray) const
 {
     return normal;
 }

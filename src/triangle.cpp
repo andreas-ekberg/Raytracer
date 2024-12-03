@@ -24,7 +24,7 @@ glm::dvec3 Triangle::getColor()
     return color;
 }
 
-glm::dvec3 Triangle::isHit(Ray &ray)
+glm::dvec3 Triangle::isHit(const Ray &ray) const
 {
     glm::dvec3 v0 = p[0];
     glm::dvec3 v1 = p[1];
@@ -61,7 +61,7 @@ glm::dvec3 Triangle::isHit(Ray &ray)
     return glm::dvec3(NAN, NAN, NAN);
 }
 
-glm::dvec3 Triangle::getPositionBarycentric(double u, double v)
+glm::dvec3 Triangle::getPositionBarycentric(double u, double v) const
 {
     return (1.0 - u - v) * p[0] + u * p[1] + v * p[2];
 }
@@ -71,7 +71,7 @@ Material Triangle::getPolygonMaterial()
     return material;
 }
 
-glm::dvec3 Triangle::getNormal(Ray &ray)
+glm::dvec3 Triangle::getNormal(const Ray &ray) const
 {
     return normal;
 }

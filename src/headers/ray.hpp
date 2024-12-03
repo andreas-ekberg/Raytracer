@@ -27,23 +27,23 @@ public:
     const glm::dvec3 &direction() const;
 
     glm::dvec3 position(double t) const;
-    glm::dvec3 calculateOffsetRay(double pixelSizeX, double pixelSizeY);
+    glm::dvec3 calculateOffsetRay(double pixelSizeX, double pixelSizeY) ;
 
     // Second hits
-    Ray *calculateRayPath(glm::dvec3 &hitPosition);
+    Ray* calculateRayPath(const glm::dvec3& hitPosition, const int depth);
     // First ray
     Ray *calculateRayPath();
 
-    glm::dvec3 getColorOfRayPath(Light &lightSource);
-    glm::dvec3 calculateIrradiance(Light &lightSource);
+    glm::dvec3 getColorOfRayPath(const Light &lightSource);
+    glm::dvec3 calculateIrradiance(const Light &lightSource);
 
     // Functions for random ray direction
     localDirection getRandomLocalDirection();
-    glm::dvec3 getRandomDirection(glm::dvec3 normals);
-    glm::dvec3 hemisphericalToCartesian(localDirection dir);
-    glm::dvec3 localCartesianToWorldCartesian(glm::dvec3 localDir, glm::dvec3 normals);
+    glm::dvec3 getRandomDirection(const glm::dvec3 &normals);
+    glm::dvec3 hemisphericalToCartesian(const localDirection &dir);
+    glm::dvec3 localCartesianToWorldCartesian(const glm::dvec3 &localDir,const glm::dvec3 &normals);
 
-    double isVisible(glm::dvec3 &intersectionPoint, glm::dvec3 &randomPointOnLight, Light &lightSource);
+    double isVisible(const glm::dvec3 &intersectionPoint,const glm::dvec3 &randomPointOnLight,const Light &lightSource);
 
     // Ray stugg
     glm::dvec3 rayOrigin;
