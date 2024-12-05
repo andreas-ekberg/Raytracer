@@ -1,6 +1,6 @@
 # Raytracer
 
-This is a raytracer done from scratch by Andreas Ekberg and Gustav Johansson, made in C++.
+This is a raytracer done from scratch by Andreas Ekberg and Gustav Johansson, made in C++. The raytracer includes global illumination and 2 different surfaces, Lambertian and Mirror with perfect reflection.
 
 ## How to run
 
@@ -39,6 +39,13 @@ int main()
 Above you can adjust the pixel width and height which will greatly affect the computation time.
 
 ## Results
+
+![Big Sample](assets/800x8001024s.png)
+
+Above is a rendered image with alot of sampling resulting in a nice looking even image (n = 1024). Below is the same image but with 32 samples resulting in a more noisy image. 
+
+![Project Logo](assets/800x80032s.png)
+
 
 
 
