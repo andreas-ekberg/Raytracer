@@ -1,6 +1,6 @@
 # Raytracer
 
-This is a raytracer done from scratch by Andreas Ekberg and Gustav Johansson, made in C++. The raytracer includes global illumination and 2 different surfaces, Lambertian and Mirror with perfect reflection.
+This is a raytracer done from scratch by [Andreas Ekberg](https://github.com/andreas-ekberg) and [Gustav Johansson](https://github.com/vibevalley), made in C++. The raytracer includes global illumination and 2 different surfaces, Lambertian and Mirror with perfect reflection.
 
 ## How to run
 
