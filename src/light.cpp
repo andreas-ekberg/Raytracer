@@ -80,8 +80,6 @@ glm::dvec3 Light::getRandomPoint() const
     glm::dvec3 edge1 = p[1] - p[0];
     glm::dvec3 edge2 = p[2] - p[0];
 
-    // Change from 4 to actuall z height //
-
     glm::dvec3 randomPoint = p[0] + randomX * edge1 + randomY * edge2;
 
     return randomPoint;

@@ -45,7 +45,6 @@ public:
 
     double isVisible(const glm::dvec3 &intersectionPoint,const glm::dvec3 &randomPointOnLight,const Light &lightSource);
 
-    // Ray stugg
     glm::dvec3 rayOrigin;
     glm::dvec3 rayDirection;
     glm::dvec3 rayColor;

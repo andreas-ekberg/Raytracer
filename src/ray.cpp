@@ -90,7 +90,6 @@ Ray *Ray::calculateRayPath()
         float randomNum = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
 
         return this->calculateRayPath(possibleIntersectionPoint, 1);
-        //return this;
     }
 
     return this;
@@ -102,6 +101,7 @@ Ray *Ray::calculateRayPath(const glm::dvec3 &hitPosition, const int depth)
         return this; 
     }
     bool continueRay = true;
+
     // New direction from reflect
     glm::dvec3 newDirection(0, 0, 0);
     if (this->hitObjectMaterial == Material::MaterialType::Lambertian)
@@ -136,7 +136,6 @@ Ray *Ray::calculateRayPath(const glm::dvec3 &hitPosition, const int depth)
     this->nextRay = newRay;
     newRay->prevRay = this;
 
-    // Another ray if hit mirror  return newRay.calculateRayPath();
     Material::MaterialType materialType;
     bool didntHit = true;
     double smallestTLength = (double)INFINITY;
@@ -163,7 +162,6 @@ Ray *Ray::calculateRayPath(const glm::dvec3 &hitPosition, const int depth)
 
     newRay->rayHitPoint = possibleIntersectionPoint;
 
-    // if hit
     materialType = Polygon::polygons[objectIndex]->getPolygonMaterial().materialType;
 
     newRay->hitObjectMaterial = materialType;
@@ -172,7 +170,6 @@ Ray *Ray::calculateRayPath(const glm::dvec3 &hitPosition, const int depth)
     switch (materialType)
     {
     case Material::MaterialType::Mirror:
-        // std::cout << "hit mirror";
         newRay->rayColor = glm::dvec3(0, 0, 0);
         return newRay->calculateRayPath(possibleIntersectionPoint, depth + 1);
         break;
@@ -224,31 +221,24 @@ glm::dvec3 Ray::getColorOfRayPath(const Light &lightSource)
         depth++;
         
     }
-    if (depth > 20) {
-        //std::cout << depth << " ";
-    }
+
     return totColor;
 }
 
 glm::dvec3 Ray::calculateIrradiance(const Light &lightSource)
 {
 
-    // Random point på lampan
+    // Random point on light source
     glm::dvec3 randomPoint = lightSource.getRandomPoint();
     glm::dvec3 LightToPointDirection = randomPoint - this->rayHitPoint;
     glm::dvec3 lightNormal = lightSource.getNormal(*this);
     double isVisible = (double)this->isVisible(this->rayHitPoint, randomPoint, lightSource);
-    //double isVisible = 1.0;
 
     double lightArea = lightSource.getArea();
 
     double distance = glm::length(LightToPointDirection);
 
-    // std::cout << glm::to_string(lightSource.getRandomPoint()) << std::endl;
-
     double cosOmegaX = glm::clamp(glm::dot(glm::normalize(this->rayHitNormal), LightToPointDirection) / distance, 0.0, (double)INFINITY);
-    // std::cout << cosOmegaX << "\n";
-
     double cosOmegaY = -1.0 * glm::dot(lightNormal, LightToPointDirection) / distance;
 
     if (cosOmegaY < 0.0)
@@ -262,7 +252,6 @@ glm::dvec3 Ray::calculateIrradiance(const Light &lightSource)
 
     double E = isVisible * Le * G * lightArea;
 
-    // Too bright / pi
     return (this->rayColor * E) / M_PI;
 }
 
@@ -295,10 +284,6 @@ double Ray::isVisible(const glm::dvec3 &intersectionPoint,const  glm::dvec3 &ran
 
         if (currentTLength + 0.0000001 < lengthBetweenLightAndObject && currentTLength > DBL_EPSILON)
         {
-            // std::cout << "HIT SOMETHING:" << std::endl;
-            // // std::cout << "   origin:" << << std::endl;
-            // // std::cout << "   direction" << << std::endl;
-            // std::cout << "   length:" << currentTLength << " -- lightLength:" << lengthBetweenLightAndObject << std::endl;
             return 0.0;
         }
     }
